@@ -1,0 +1,831 @@
+/* =========================================================
+   THEME
+   ========================================================= */
+
+:root {
+    --black: #080b0d;
+    --black-2: #0d1215;
+    --black-3: #12191d;
+
+    --white: #ffffff;
+    --gray: #8c999f;
+    --gray-dark: #263137;
+
+    --cyan: #48e5ff;
+    --cyan-soft: rgba(72, 229, 255, 0.15);
+    --cyan-glow: rgba(72, 229, 255, 0.35);
+
+    --border: rgba(72, 229, 255, 0.18);
+
+    --radius: 14px;
+}
+
+
+/* =========================================================
+   CONFIGURACIÓN GENERAL
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: var(--black);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color: var(--white);
+}
+
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #26343a;
+
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--cyan);
+}
+
+
+/* Dash */
+
+#react-entry-point,
+#_dash-app-content {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+    position: relative;
+
+    display: flex;
+
+    width: 100%;
+    height: 110px;
+
+    align-items: center;
+
+    padding: 0 40px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #080b0d 0%,
+            #0d1215 50%,
+            #080b0d 100%
+        );
+
+    border-bottom: 1px solid var(--border);
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+}
+
+
+/* Línea decorativa superior */
+
+.header::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--cyan),
+            transparent
+        );
+
+    opacity: 0.8;
+
+    animation: scanHeader 4s linear infinite;
+}
+
+
+/* Grid técnico */
+
+.header::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(72, 229, 255, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(72, 229, 255, 0.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 30px 30px;
+
+    pointer-events: none;
+}
+
+
+.header h1 {
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0;
+
+    color: white;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 32px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+/* Detalle tipo terminal */
+
+.header h1::before {
+    content: "> ";
+
+    color: var(--cyan);
+
+    font-family: monospace;
+
+    animation: blink 1.2s infinite;
+}
+
+
+/* Línea debajo */
+
+.header h1::after {
+    content: "";
+
+    display: block;
+
+    width: 55px;
+    height: 3px;
+
+    margin-top: 9px;
+
+    background: var(--cyan);
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 0 8px var(--cyan-glow);
+}
+
+
+/* =========================================================
+   CONTENEDOR
+   ========================================================= */
+
+.contenedor {
+    display: flex;
+
+    width: 100%;
+    height: calc(100vh - 110px);
+
+    background: var(--black-2);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.segmentadores {
+    position: relative;
+
+    width: 280px;
+    height: 100%;
+
+    flex-shrink: 0;
+
+    padding: 30px 24px;
+
+    background: var(--black);
+
+    border-right: 1px solid var(--border);
+
+    overflow-y: auto;
+}
+
+
+/* Línea lateral */
+
+.segmentadores::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 1px;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            transparent,
+            var(--cyan),
+            transparent
+        );
+
+    opacity: 0.25;
+}
+
+
+.segmentadores h3 {
+    margin: 0 0 35px 0;
+
+    color: white;
+
+    font-family: monospace;
+
+    font-size: 16px;
+
+    letter-spacing: 1px;
+}
+
+.segmentadores h3::before {
+    content: "// ";
+
+    color: var(--cyan);
+}
+
+
+/* Labels */
+
+.segmentadores label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #718087;
+
+    font-family: monospace;
+
+    font-size: 12px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   DROPDOWNS
+   ========================================================= */
+
+.segmentadores .Select-control {
+    min-height: 42px;
+
+    background: var(--black-3);
+
+    border: 1px solid #263137;
+
+    border-radius: 8px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.segmentadores .Select-control:hover {
+    background: #151e23;
+
+    border-color: var(--cyan);
+
+    box-shadow:
+        0 0 0 2px rgba(72, 229, 255, 0.05),
+        0 0 15px rgba(72, 229, 255, 0.08);
+}
+
+
+.segmentadores .Select-value-label {
+    color: white !important;
+}
+
+
+.segmentadores .Select-placeholder {
+    color: #59676d;
+}
+
+
+.segmentadores .Select-menu-outer {
+    z-index: 1000;
+
+    background: var(--black-3);
+
+    border: 1px solid var(--cyan);
+
+    color: white;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+
+/* =========================================================
+   ZONA PRINCIPAL
+   ========================================================= */
+
+.graficas {
+    display: flex;
+
+    flex: 1;
+
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    flex-direction: column;
+
+    background:
+        radial-gradient(
+            circle at 70% 10%,
+            rgba(72, 229, 255, 0.035),
+            transparent 35%
+        ),
+        var(--black-2);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   TARJETAS
+   ========================================================= */
+
+.tarjetas {
+    display: flex;
+
+    width: 100%;
+    height: 30%;
+
+    gap: 18px;
+
+    padding: 22px;
+
+    background: transparent;
+
+    flex-shrink: 0;
+}
+
+
+.tarjeta {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff,
+            #f5f7f8
+        );
+
+    border: 1px solid #e3e8ea;
+
+    border-radius: var(--radius);
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.25);
+
+    overflow: hidden;
+
+    cursor: default;
+
+    transition:
+        transform 0.25s cubic-bezier(.2,.8,.2,1),
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+/* Barra superior */
+
+.tarjeta::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--cyan),
+            transparent
+        );
+
+    transition:
+        height 0.25s ease;
+}
+
+
+/* Glow */
+
+.tarjeta::after {
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+    height: 150px;
+
+    top: -90px;
+    right: -90px;
+
+    background: var(--cyan);
+
+    border-radius: 50%;
+
+    filter: blur(70px);
+
+    opacity: 0;
+
+    transition: opacity 0.3s ease;
+}
+
+
+/* Hover */
+
+.tarjeta:hover {
+    transform:
+        translateY(-5px)
+        scale(1.01);
+
+    border-color:
+        rgba(72, 229, 255, 0.6);
+
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.35),
+        0 0 25px rgba(72, 229, 255, 0.12);
+}
+
+
+.tarjeta:hover::before {
+    height: 5px;
+}
+
+
+.tarjeta:hover::after {
+    opacity: 0.12;
+}
+
+
+/* Título */
+
+.tarjeta p {
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0 0 15px 0;
+
+    color: #69767c;
+
+    font-family: monospace;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+}
+
+
+/* Valor */
+
+.tarjeta h2 {
+    position: relative;
+
+    z-index: 2;
+
+    margin: 0;
+
+    color: #080b0d;
+
+    font-size: 29px;
+
+    font-weight: 700;
+
+    letter-spacing: -0.5px;
+}
+
+
+/* Indicador */
+
+.tarjeta h2::before {
+    content: "●";
+
+    margin-right: 8px;
+
+    color: var(--cyan);
+
+    font-size: 9px;
+
+    vertical-align: middle;
+
+    text-shadow:
+        0 0 8px var(--cyan);
+}
+
+
+/* =========================================================
+   VISUALIZACIONES
+   ========================================================= */
+
+.visualizaciones {
+    display: flex;
+
+    width: 100%;
+    height: 70%;
+
+    gap: 18px;
+
+    padding:
+        0
+        22px
+        22px
+        22px;
+
+    background: transparent;
+
+    min-height: 0;
+}
+
+
+/* =========================================================
+   CONTENEDORES DE GRÁFICAS
+   ========================================================= */
+
+.pastel,
+.barras {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    background: white;
+
+    border: 1px solid #dfe5e8;
+
+    border-radius: var(--radius);
+
+    overflow: hidden;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.25);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+.pastel:hover,
+.barras:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(72, 229, 255, 0.45);
+
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.3),
+        0 0 25px rgba(72, 229, 255, 0.07);
+}
+
+
+/* =========================================================
+   DETALLES DE TERMINAL EN LAS GRÁFICAS
+   ========================================================= */
+
+.pastel::before,
+.barras::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--cyan),
+            transparent
+        );
+
+    z-index: 10;
+}
+
+
+/* Esquinas */
+
+.pastel::after,
+.barras::after {
+    content: "";
+
+    position: absolute;
+
+    right: 10px;
+    bottom: 10px;
+
+    width: 20px;
+    height: 20px;
+
+    border-right: 2px solid var(--cyan);
+    border-bottom: 2px solid var(--cyan);
+
+    opacity: 0.5;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   DASH / PLOTLY
+   ========================================================= */
+
+.pastel .dash-graph,
+.barras .dash-graph {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* =========================================================
+   ANIMACIONES
+   ========================================================= */
+
+@keyframes scanHeader {
+
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+
+@keyframes blink {
+
+    0%,
+    45% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0.25;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .header {
+        height: 90px;
+
+        padding: 0 20px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .contenedor {
+        height: calc(100vh - 90px);
+
+        flex-direction: column;
+
+        overflow-y: auto;
+    }
+
+    .segmentadores {
+        width: 100%;
+        height: auto;
+
+        padding: 20px;
+
+        border-right: none;
+
+        border-bottom:
+            1px solid var(--border);
+    }
+
+    .graficas {
+        width: 100%;
+
+        height: auto;
+
+        min-height:
+            calc(100vh - 250px);
+    }
+
+    .tarjetas {
+        height: auto;
+
+        flex-wrap: wrap;
+
+        padding: 15px;
+    }
+
+    .tarjeta {
+        flex:
+            0 0
+            calc(50% - 9px);
+
+        min-height: 130px;
+    }
+
+    .visualizaciones {
+        height: 700px;
+
+        flex-direction: column;
+
+        padding:
+            0
+            15px
+            15px
+            15px;
+    }
+
+    .pastel,
+    .barras {
+        width: 100%;
+        height: 50%;
+    }
+}
