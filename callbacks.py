@@ -1,138 +1,318 @@
-from dash import Input, Output
+from dash import Input, Output, callback, html
 from app import app
-from datos import df
+
+from datos import resultados_completos
+
+from funciones import (
+    total_registros,
+    total_indicadores_estrategicos,
+    total_indicadores_sgc,
+)
+
 import plotly.express as px
 
 
+# ========================================================================================
+#                                      BOOKMARKS
+# ========================================================================================
+
+# @callback(
+#     Output("seccion-actual", "data"),
+
+#     Input("btn-resumen", "n_clicks"),
+#     Input("btn-calidad", "n_clicks"),
+#     Input("btn-procesos", "n_clicks"),
+#     Input("btn-sgc", "n_clicks"),
+#     Input("btn-objetivos", "n_clicks"),
+# )
+# def cambiar_seccion(
+#     resumen,
+#     calidad,
+#     procesos,
+#     sgc,
+#     objetivos
+# ):
+
+#     ctx = dash.callback_context
+
+#     if not ctx.triggered:
+#         return "resumen"
+
+#     boton = ctx.triggered[0]["prop_id"].split(".")[0]
+
+#     mapa = {
+#         "btn-resumen": "resumen",
+#         "btn-calidad": "calidad",
+#         "btn-procesos": "procesos",
+#         "btn-sgc": "sgc",
+#         "btn-objetivos": "objetivos",
+#     }
+
+#     return mapa[boton]
+# # ========================================================================================
+#                                      KPIs
+# ========================================================================================
 @app.callback(
-    Output("kpi-ventas", "children"),
-    Output("kpi-promedios", "children"),
-    Output("kpi-registros", "children"),
-    Output("kpi-maximos", "children"),
-    Input("filtro-producto", "value"),
-    Input("filtro-mes", "value"),
+    Output("filtro-año", "value"),
+    Output("filtro-centro", "value"),
+    Output("filtro-periodo", "value"),
+    Output("filtro-nivel", "value"),
+    Output("filtro-modalidad", "value"),
+    Output("filtro-tipo", "value"),
+
+    Input("btn-borrar-filtros", "n_clicks"),
+
+    prevent_initial_call=True,
 )
-def actualizar_kpis(producto, mes):
-
-    # Copiamos el DataFrame
-    datos_filtrados = df.copy()
-
-    if producto == None and mes == None:
-        return (
-            "Selecciona un valor",
-            "Selecciona un valor",
-            "Selecciona un valor",
-            "Selecciona un valor",
-        )
-    elif producto == None:
-        return (
-            "Selecciona un valor para producto",
-            "Selecciona un valor para producto",
-            "Selecciona un valor para producto",
-            "Selecciona un valor para producto",
-        )
-    elif mes == None:
-        return (
-            "Selecciona un valor para mes",
-            "Selecciona un valor para mes",
-            "Selecciona un valor para mes",
-            "Selecciona un valor para mes",
-        )
-
-    # Filtro producto
-    if producto != "Todos":
-        datos_filtrados = datos_filtrados[datos_filtrados["producto"] == producto]
-
-    # Filtro mes
-    if mes != "Todos":
-        datos_filtrados = datos_filtrados[datos_filtrados["mes"] == mes]
-
-    # -------------------------
-    # KPIs
-    # -------------------------
-
-    # Ventas totales
-    ventas_totales = datos_filtrados["ventas"].sum()
-
-    # Promedio
-    ventas_promedio = datos_filtrados["ventas"].mean()
-
-    # Cantidad de registros
-    cantidad_registros = len(datos_filtrados)
-
-    # Venta máxima
-    venta_maxima = datos_filtrados["ventas"].max()
-
-    # -------------------------
-    # Formatear valores
-    # -------------------------
-
-    kpi_ventas = f"${ventas_totales:,.0f}"
-
-    kpi_promedios = f"${ventas_promedio:,.2f}"
-
-    kpi_registros = f"{cantidad_registros:,}"
-
-    kpi_maximos = f"${venta_maxima:,.0f}"
+def borrar_filtros(n_clicks):
 
     return (
-        kpi_ventas,
-        kpi_promedios,
-        kpi_registros,
-        kpi_maximos,
+        "Historico",  # Año
+        "Todos",      # Centro
+        "Todos",      # Periodo
+        "Todos",      # Nivel
+        "Todos",      # Modalidad
+        "Todos",      # Tipo
+    )
+
+@app.callback(
+    Output("kpi-it", "children"),
+    Output("kpi-ies", "children"),
+    Output("kpi-its", "children"),
+    Output("kpi-maximos", "children"),
+    Input("filtro-año", "value"),
+    Input("filtro-centro", "value"),
+    Input("filtro-periodo", "value"),
+    Input("filtro-nivel", "value"),
+    Input("filtro-modalidad", "value"),
+    Input("filtro-tipo", "value"),
+)
+def actualizar_kpis(
+    año,
+    centro,
+    periodo,
+    nivel,
+    modalidad,
+    tipo,
+):
+
+    # --------------------------------------------------------------------------
+    # Validar filtro
+    # --------------------------------------------------------------------------
+
+    if año is None:
+        return (
+            "Selecciona un valor",
+            "Selecciona un valor",
+            "Selecciona un valor",
+            "Selecciona un valor",
+        )
+
+    # --------------------------------------------------------------------------
+    # Copiar datos históricos
+    # --------------------------------------------------------------------------
+
+    datos_filtrados = resultados_completos.copy()
+
+    # --------------------------------------------------------------------------
+    # FILTRO AÑO
+    # --------------------------------------------------------------------------
+
+    if año != "Historico":
+
+        datos_filtrados = datos_filtrados[datos_filtrados["ano"] == int(año)]
+
+    # --------------------------------------------------------------------------
+    # FILTRO CENTRO UNIVERSITARIO
+    # --------------------------------------------------------------------------
+
+    if centro != "Todos":
+
+        datos_filtrados = datos_filtrados[
+            datos_filtrados["centro_universitario"] == centro
+        ]
+
+    # --------------------------------------------------------------------------
+    # FILTRO PERIODO ACADÉMICO
+    # --------------------------------------------------------------------------
+
+    if periodo != "Todos":
+
+        datos_filtrados = datos_filtrados[
+            datos_filtrados["periodo academico"] == periodo
+        ]
+
+    # --------------------------------------------------------------------------
+    # FILTRO NIVEL ACADÉMICO
+    # --------------------------------------------------------------------------
+
+    if nivel != "Todos":
+
+        datos_filtrados = datos_filtrados[datos_filtrados["nivel academico"] == nivel]
+
+    # --------------------------------------------------------------------------
+    # FILTRO MODALIDAD
+    # --------------------------------------------------------------------------
+
+    if modalidad != "Todos":
+
+        datos_filtrados = datos_filtrados[datos_filtrados["modalidad"] == modalidad]
+
+    # --------------------------------------------------------------------------
+    # FILTRO TIPO DE INDICADOR
+    # --------------------------------------------------------------------------
+
+    if tipo != "Todos":
+
+        datos_filtrados = datos_filtrados[datos_filtrados["tipo de indicador"] == tipo]
+
+    # ==========================================================================
+    # KPIs
+    # ==========================================================================
+
+    total = total_registros(datos_filtrados)
+
+    estrategicos = total_indicadores_estrategicos(datos_filtrados)
+
+    sgc = total_indicadores_sgc(datos_filtrados)
+
+    # Promedio de resultados
+    promedio = datos_filtrados["resultado"].mean()
+
+    # ==========================================================================
+    # FORMATEAR
+    # ==========================================================================
+
+    kpi_total = f"{total:,}"
+
+    kpi_estrategicos = f"{estrategicos:,}"
+
+    kpi_sgc = f"{sgc:,}"
+
+    kpi_promedio = f"{promedio:,.2f}" if not datos_filtrados.empty else "0"
+
+    # ==========================================================================
+    # RETORNAR
+    # ==========================================================================
+
+    return (
+        kpi_total,
+        kpi_estrategicos,
+        kpi_sgc,
+        kpi_promedio,
     )
 
 
-# -------------------------
-# Graficas
-# -------------------------
-
+# ========================================================================================
+#                                      GRÁFICAS
+# ========================================================================================
 
 
 @app.callback(
     Output("grafico-pastel", "figure"),
     Output("grafico-barras", "figure"),
-    Input("filtro-producto", "value"),
-    Input("filtro-mes", "value"),
+    Output("grafico-linea", "figure"),
+    Output("grafico-modalidad", "figure"),
+
+    Input("filtro-año", "value"),
+    Input("filtro-centro", "value"),
+    Input("filtro-periodo", "value"),
+    Input("filtro-nivel", "value"),
+    Input("filtro-modalidad", "value"),
+    Input("filtro-tipo", "value"),
 )
-def actualizar_graficas(producto, mes):
+def actualizar_graficas(
+    año,
+    centro,
+    periodo,
+    nivel,
+    modalidad,
+    tipo,
+):
 
-    # Copiamos el DataFrame
-    datos_filtrados = df.copy()
+    # --------------------------------------------------------------------------
+    # Copiar datos
+    # --------------------------------------------------------------------------
 
-    # -------------------------
-    # FILTRO PRODUCTO
-    # -------------------------
+    datos_filtrados = resultados_completos.copy()
 
-    if producto != "Todos":
+    # --------------------------------------------------------------------------
+    # FILTRO AÑO
+    # --------------------------------------------------------------------------
+
+    if año != "Historico":
+
+        datos_filtrados = datos_filtrados[datos_filtrados["ano"] == int(año)]
+
+    # --------------------------------------------------------------------------
+    # FILTRO CENTRO
+    # --------------------------------------------------------------------------
+
+    if centro != "Todos":
+
         datos_filtrados = datos_filtrados[
-            datos_filtrados["producto"] == producto
+            datos_filtrados["centro_universitario"] == centro
         ]
 
-    # -------------------------
-    # FILTRO MES
-    # -------------------------
+    # --------------------------------------------------------------------------
+    # FILTRO PERIODO
+    # --------------------------------------------------------------------------
 
-    if mes != "Todos":
+    if periodo != "Todos":
+
         datos_filtrados = datos_filtrados[
-            datos_filtrados["mes"] == mes
+            datos_filtrados["periodo academico"] == periodo
         ]
 
-    # -------------------------
-    # GRÁFICO DE PASTEL
-    # -------------------------
+    # --------------------------------------------------------------------------
+    # FILTRO NIVEL
+    # --------------------------------------------------------------------------
 
-    grafico_pastel = px.pie(
-        datos_filtrados,
-        names="producto",
-        values="ventas",
-        title="Distribución de ventas por producto",
-    )
-    
+    if nivel != "Todos":
+
+        datos_filtrados = datos_filtrados[datos_filtrados["nivel academico"] == nivel]
+
+    # --------------------------------------------------------------------------
+    # FILTRO MODALIDAD
+    # --------------------------------------------------------------------------
+
+    if modalidad != "Todos":
+
+        datos_filtrados = datos_filtrados[datos_filtrados["modalidad"] == modalidad]
+
+    # --------------------------------------------------------------------------
+    # FILTRO TIPO
+    # --------------------------------------------------------------------------
+
+    if tipo != "Todos":
+
+        datos_filtrados = datos_filtrados[datos_filtrados["tipo de indicador"] == tipo]
+
+    # ==========================================================================
+    # GRÁFICO PASTEL
+    # ==========================================================================
+
+    if datos_filtrados.empty:
+
+        grafico_pastel = px.pie(title="No hay datos para los filtros seleccionados")
+
+    else:
+
+        datos_pastel = datos_filtrados.groupby("modalidad", as_index=False)[
+            "resultado"
+        ].sum()
+
+        grafico_pastel = px.pie(
+            datos_pastel,
+            names="modalidad",
+            values="resultado",
+            title="Distribución de resultados por modalidad",
+        )
+
     grafico_pastel.update_layout(
         font=dict(
             family="Arial",
-            color="#080b0d"
+            color="#080b0d",
         ),
         paper_bgcolor="white",
         plot_bgcolor="white",
@@ -140,25 +320,40 @@ def actualizar_graficas(producto, mes):
             l=30,
             r=30,
             t=60,
-            b=30
+            b=30,
         ),
     )
 
-    # -------------------------
+    # ==========================================================================
     # GRÁFICO DE BARRAS
-    # -------------------------
+    # ==========================================================================
 
-    grafico_barras = px.bar(
-        datos_filtrados,
-        x="producto",
-        y="ventas",
-        title="Ventas por producto",
-    )
-    
+    if datos_filtrados.empty:
+
+        grafico_barras = px.bar(title="No hay datos para los filtros seleccionados")
+
+    else:
+
+        datos_barras = (
+            datos_filtrados.groupby("agrupador")["indicador_id"]
+            .nunique()
+            .reset_index(name="cantidad_indicadores")
+        )
+
+        grafico_barras = px.bar(
+            datos_barras,
+            x="cantidad_indicadores",
+            y="agrupador",
+            orientation="h",
+            title="Indicadores por agrupador",
+            text="cantidad_indicadores",
+            color="agrupador",
+        )
+
     grafico_barras.update_layout(
         font=dict(
             family="Arial",
-            color="#080b0d"
+            color="#080b0d",
         ),
         paper_bgcolor="white",
         plot_bgcolor="white",
@@ -166,8 +361,118 @@ def actualizar_graficas(producto, mes):
             l=30,
             r=30,
             t=60,
-            b=30
-        )
+            b=30,
+        ),
     )
-    
-    return grafico_pastel, grafico_barras
+
+    # ==========================================================================
+    # GRÁFICA 3
+    # REGISTROS HISTÓRICOS POR AÑO
+    # ==========================================================================
+
+    if datos_filtrados.empty:
+
+        grafico_linea = px.line(
+            title="No hay datos para los filtros seleccionados"
+        )
+
+    else:
+
+        datos_registros = (
+            datos_filtrados
+            .groupby("ano")
+            .size()
+            .reset_index(name="total_registros")
+            .sort_values("ano")
+        )
+
+        grafico_linea = px.line(
+            datos_registros,
+            x="ano",
+            y="total_registros",
+            markers=True,
+            title="Registros históricos por año",
+        )
+
+
+    grafico_linea.update_layout(
+        font=dict(
+            family="Arial",
+            color="#080b0d",
+        ),
+
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+
+        xaxis_title="Año",
+        yaxis_title="Total de registros",
+
+        margin=dict(
+            l=30,
+            r=30,
+            t=60,
+            b=30,
+        ),
+    )
+
+
+    # ==========================================================================
+    # GRÁFICA 4
+    # PROMEDIO POR MODALIDAD
+    # ==========================================================================
+
+    if datos_filtrados.empty:
+
+        grafico_modalidad = px.bar(
+            title="No hay datos para los filtros seleccionados"
+        )
+
+    else:
+
+        datos_modalidad = (
+            datos_filtrados
+            .dropna(subset=["modalidad", "resultado"])
+            .groupby("modalidad", as_index=False)["resultado"]
+            .mean()
+            .sort_values("resultado", ascending=False)
+        )
+
+        grafico_modalidad = px.bar(
+            datos_modalidad,
+            x="modalidad",
+            y="resultado",
+            title="Promedio de resultados por modalidad",
+            text_auto=".2f",
+            color="modalidad",
+        )
+
+
+    grafico_modalidad.update_layout(
+        font=dict(
+            family="Arial",
+            color="#080b0d",
+        ),
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+
+        xaxis_title="Modalidad",
+        yaxis_title="Promedio de resultado",
+
+        margin=dict(
+            l=30,
+            r=30,
+            t=60,
+            b=30,
+        ),
+    )
+
+    # ==========================================================================
+    # RETORNAR GRÁFICAS
+    # ==========================================================================
+
+    return (
+        grafico_pastel,
+        grafico_barras,
+        grafico_linea,
+        grafico_modalidad
+    )
