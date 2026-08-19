@@ -3,7 +3,7 @@ from datos import resultados_completos
 
 def total_registros(df):
 
-    return df["resultado_id"].count()
+    return df["indicador_id"].nunique()
 
 
 def total_indicadores_estrategicos(df):

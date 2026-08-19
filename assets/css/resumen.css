@@ -1,0 +1,388 @@
+/* ==========================================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================================== */
+
+.contenedor {
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+
+    overflow: hidden;
+}
+
+
+/* ==========================================================================
+   CONTENIDO DE LA SECCIÓN
+   ========================================================================== */
+
+#contenido-seccion {
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* ==========================================================================
+   ZONA DE GRÁFICAS
+   ========================================================================== */
+
+.graficas {
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--bg);
+
+    overflow: hidden;
+}
+
+
+/* ==========================================================================
+   TARJETAS KPI
+   ========================================================================== */
+
+.tarjetas {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+
+    padding: 10px 20px;
+
+    flex: 0 0 115px;
+
+    min-height: 115px;
+}
+
+
+.tarjeta {
+    min-width: 0;
+
+    padding: 16px;
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, .08);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.tarjeta:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, .12);
+}
+
+
+.tarjeta p {
+    margin: 0 0 8px;
+
+    color: var(--text-soft);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+}
+
+
+.tarjeta h2 {
+    margin: 0;
+
+    color: var(--primary);
+
+    font-size: 32px;
+    font-weight: 700;
+}
+
+
+/* ==========================================================================
+   VISUALIZACIONES
+   ========================================================================== */
+
+.visualizaciones {
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    grid-auto-rows: minmax(320px, 1fr);
+
+    gap: 18px;
+
+    padding:
+        0
+        20px
+        20px;
+
+    overflow-y: auto;
+}
+
+
+/* ==========================================================================
+   CONTENEDORES DE GRÁFICAS
+   ========================================================================== */
+
+.pastel,
+.barras,
+.grafico-3,
+.grafico-4,
+.grafico-5 {
+    min-width: 0;
+    min-height: 320px;
+
+    position: relative;
+
+    background: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, .08);
+
+    overflow: hidden;
+}
+
+
+/* ==========================================================================
+   LÍNEA SUPERIOR
+   ========================================================================== */
+
+.pastel::before,
+.barras::before,
+.grafico-3::before,
+.grafico-4::before,
+.grafico-5::before {
+    content: "";
+
+    display: block;
+
+    width: 100%;
+    height: 5px;
+
+    background: var(--primary);
+}
+
+
+/* ==========================================================================
+   GRÁFICA 5
+   ========================================================================== */
+
+.grafico-5 {
+    grid-column: 1 / -1;
+}
+
+
+/* ==========================================================================
+   DASH GRAPH
+   ========================================================================== */
+
+.pastel .dash-graph,
+.barras .dash-graph,
+.grafico-3 .dash-graph,
+.grafico-4 .dash-graph,
+.grafico-5 .dash-graph {
+    width: 100% !important;
+
+    height: calc(100% - 5px) !important;
+
+    min-height: 0 !important;
+}
+
+
+/* ==========================================================================
+   PLOTLY
+   ========================================================================== */
+
+.js-plotly-plot,
+.plot-container,
+.plotly {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* =========================================================
+   TABLA DE AGRUPADORES
+   ========================================================= */
+
+.tabla-agrupadores {
+
+    grid-column: 1 / -1;
+
+    border-radius: 10px;
+    min-width: 0;
+    min-height: 320px;
+
+    background: white;
+
+    border-radius: var(--radius);
+
+    border: 1px solid var(--border);
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, .08);
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+}
+
+
+/* =========================================================
+   LÍNEA SUPERIOR
+   ========================================================= */
+
+.tabla-agrupadores::before {
+
+    content: "";
+
+    display: block;
+
+    width: 100%;
+    height: 5px;
+
+    background: var(--primary);
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   TÍTULO
+   ========================================================= */
+
+.titulo-tabla {
+
+    margin: 0;
+
+    padding: 16px 20px 12px;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    border-bottom: 3px solid var(--green);
+
+    flex-shrink: 0;
+
+    text-align: center;
+
+    background: var(--primary);
+    margin-bottom: 10px;
+}
+
+
+/* =========================================================
+   CONTENEDOR DE LA TABLA
+   ========================================================= */
+
+.tabla-contenedor {
+
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    overflow: hidden;
+
+    padding: 0 20px 20px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   DATATABLE
+   ========================================================= */
+
+.tabla-agrupadores .dash-table-container {
+
+    width: 100%;
+
+    height: 100%;
+
+    min-height: 0;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   ÁREA SCROLL DE DATATABLE
+   ========================================================= */
+
+.tabla-agrupadores .dash-spreadsheet-container {
+
+    height: 100% !important;
+
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+.tabla-agrupadores .dash-header {
+
+    font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   CELDAS
+   ========================================================= */
+
+.tabla-agrupadores .dash-cell {
+
+    font-family: Arial, sans-serif;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   HOVER
+   ========================================================= */
+
+.tabla-agrupadores .dash-cell:hover {
+
+    background-color: #f4f7fb !important;
+}

@@ -1,15 +1,32 @@
-html.Div
+.app                         100vh
 │
-├── header
-├── navegación
-├── dcc.Store
+├── .header                  110px
+│
+├── .navegacion              altura propia
+│
+└── .contenedor              flex: 1
+    │
+    ├── .segmentadores       300px
+    │
+    └── #contenido-seccion   flex: 1
+        │
+        └── .graficas        flex: 1
+            │
+            ├── .tarjetas    140px
+            │
+            └── .visualizaciones
+                              ↕ SCROLL
+
+
+
+app.py
+│
+├── layout_header()
+├── layout_navegacion()
+├── dcc.Store("seccion-actual")
 │
 └── .contenedor
-    │
-    ├── filtros
+    ├── layout_filtros()
     │
     └── #contenido-seccion
-        │
-        └── .graficas
-            ├── tarjetas
-            └── visualizaciones
+        └── layout_resumen()

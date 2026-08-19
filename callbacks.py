@@ -2,6 +2,10 @@ from dash import Input, Output, ctx, html
 from app import app
 from secciones.resumen import layout_resumen
 from datos import resultados_completos
+from configuraciones.colors import COLORES_AGRUPADORES, COLOR_GRIS
+from configuraciones.agrupadores import DESCRIPCIONES_AGRUPADORES
+from componentes.resumen.tabla_agrupadores import tabla_agrupadores
+import pandas as pd
 
 from funciones import (
     total_registros,
@@ -12,43 +16,6 @@ from funciones import (
 import plotly.express as px
 
 
-# ========================================================================================
-#                                      BOOKMARKS
-# ========================================================================================
-
-# @callback(
-#     Output("seccion-actual", "data"),
-
-#     Input("btn-resumen", "n_clicks"),
-#     Input("btn-calidad", "n_clicks"),
-#     Input("btn-procesos", "n_clicks"),
-#     Input("btn-sgc", "n_clicks"),
-#     Input("btn-objetivos", "n_clicks"),
-# )
-# def cambiar_seccion(
-#     resumen,
-#     calidad,
-#     procesos,
-#     sgc,
-#     objetivos
-# ):
-
-#     ctx = dash.callback_context
-
-#     if not ctx.triggered:
-#         return "resumen"
-
-#     boton = ctx.triggered[0]["prop_id"].split(".")[0]
-
-#     mapa = {
-#         "btn-resumen": "resumen",
-#         "btn-calidad": "calidad",
-#         "btn-procesos": "procesos",
-#         "btn-sgc": "sgc",
-#         "btn-objetivos": "objetivos",
-#     }
-
-#     return mapa[boton]
 # # ========================================================================================
 #                                      KPIs
 # ========================================================================================
@@ -177,7 +144,7 @@ def actualizar_kpis(
     sgc = total_indicadores_sgc(datos_filtrados)
 
     # Promedio de resultados
-    promedio = datos_filtrados["resultado"].mean()
+    en_contruccion = "--"
 
     # ==========================================================================
     # FORMATEAR
@@ -189,7 +156,6 @@ def actualizar_kpis(
 
     kpi_sgc = f"{sgc:,}"
 
-    kpi_promedio = f"{promedio:,.2f}" if not datos_filtrados.empty else "0"
 
     # ==========================================================================
     # RETORNAR
@@ -199,7 +165,7 @@ def actualizar_kpis(
         kpi_total,
         kpi_estrategicos,
         kpi_sgc,
-        kpi_promedio,
+        en_contruccion,
     )
 
 
@@ -211,8 +177,9 @@ def actualizar_kpis(
 @app.callback(
     Output("grafico-pastel", "figure"),
     Output("grafico-barras", "figure"),
-    Output("grafico-linea", "figure"),
     Output("grafico-modalidad", "figure"),
+    Output("tabla-agrupadores", "data"),
+
 
     Input("filtro-año", "value"),
     Input("filtro-centro", "value"),
@@ -335,85 +302,99 @@ def actualizar_graficas(
     else:
 
         datos_barras = (
-            datos_filtrados.groupby("agrupador")["indicador_id"]
+            datos_filtrados.groupby("macroproceso")["indicador_id"]
             .nunique()
             .reset_index(name="cantidad_indicadores")
         )
 
+
         grafico_barras = px.bar(
             datos_barras,
             x="cantidad_indicadores",
-            y="agrupador",
+            y="macroproceso",
             orientation="h",
             title="Indicadores por agrupador",
-            text="cantidad_indicadores",
-            color="agrupador",
+            color="macroproceso",
         )
 
-    grafico_barras.update_layout(
-        font=dict(
-            family="Arial",
-            color="#080b0d",
-        ),
-        paper_bgcolor="white",
-        plot_bgcolor="white",
-        margin=dict(
-            l=30,
-            r=30,
-            t=60,
-            b=30,
-        ),
-    )
+        # ==========================================================================
+        # ESTILO
+        # ==========================================================================
+
+        grafico_barras.update_layout(
+
+            font=dict(
+                family="Arial",
+                color="#080b0d",
+            ),
+
+            paper_bgcolor="white",
+            plot_bgcolor="white",
+
+            margin=dict(
+                l=30,
+                r=30,
+                t=60,
+                b=30,
+            ),
+
+            showlegend=False,
+        )
+
+
+        # ==========================================================================
+        # EJES
+        # ==========================================================================
+
+        grafico_barras.update_xaxes(
+            title=None,
+            showgrid=True,
+            gridcolor="#eef1f4",
+            zeroline=False,
+        )
+
+        grafico_barras.update_yaxes(
+            title=None,
+            showgrid=False,
+            zeroline=False,
+        )
 
     # ==========================================================================
-    # GRÁFICA 3
-    # REGISTROS HISTÓRICOS POR AÑO
+    # TABLA DE AGRUPADORES
     # ==========================================================================
 
     if datos_filtrados.empty:
 
-        grafico_linea = px.line(
-            title="No hay datos para los filtros seleccionados"
+        datos_tabla = pd.DataFrame(
+            columns=[
+                "agrupador",
+                "descripcion",
+                "total_indicadores",
+            ]
         )
 
     else:
 
-        datos_registros = (
+        datos_tabla = (
             datos_filtrados
-            .groupby("ano")
-            .size()
-            .reset_index(name="total_registros")
-            .sort_values("ano")
+            .groupby("agrupador")["indicador_id"]
+            .nunique()
+            .reset_index(name="total_indicadores")
         )
 
-        grafico_linea = px.line(
-            datos_registros,
-            x="ano",
-            y="total_registros",
-            markers=True,
-            title="Registros históricos por año",
+        datos_tabla["descripcion"] = (
+            datos_tabla["agrupador"]
+            .map(DESCRIPCIONES_AGRUPADORES)
+            .fillna("Sin descripción disponible.")
         )
 
-
-    grafico_linea.update_layout(
-        font=dict(
-            family="Arial",
-            color="#080b0d",
-        ),
-
-        paper_bgcolor="white",
-        plot_bgcolor="white",
-
-        xaxis_title="Año",
-        yaxis_title="Total de registros",
-
-        margin=dict(
-            l=30,
-            r=30,
-            t=60,
-            b=30,
-        ),
-    )
+        datos_tabla = datos_tabla[
+            [
+                "agrupador",
+                "descripcion",
+                "total_indicadores",
+            ]
+        ]
 
 
     # ==========================================================================
@@ -473,8 +454,8 @@ def actualizar_graficas(
     return (
         grafico_pastel,
         grafico_barras,
-        grafico_linea,
-        grafico_modalidad
+        grafico_modalidad,
+        datos_tabla.to_dict("records"),
     )
 
 

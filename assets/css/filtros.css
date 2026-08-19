@@ -1,0 +1,220 @@
+/* ==========================================================================
+   FILTROS
+   ========================================================================== */
+
+.segmentadores {
+    width: 300px;
+
+    flex-shrink: 0;
+
+    height: 100%;
+
+    background: white;
+
+    padding: 24px;
+
+    border-right: 1px solid var(--border);
+
+    overflow-y: auto;
+}
+
+
+/* ==========================================================================
+   TÍTULO
+   ========================================================================== */
+
+.segmentadores h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    color: var(--primary);
+
+    font-size: 17px;
+    font-weight: 700;
+
+    border-bottom: 3px solid var(--green);
+
+    padding-bottom: 8px;
+}
+
+
+/* ==========================================================================
+   ETIQUETAS
+   ========================================================================== */
+
+.segmentadores label {
+    display: block;
+
+    margin-bottom: 8px;
+    margin-top: 20px;
+
+    color: var(--primary);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: .5px;
+}
+
+
+/* ==========================================================================
+   DROPDOWNS DASH
+   ========================================================================== */
+
+.segmentadores .Select-control {
+    min-height: 42px !important;
+
+    background: white !important;
+
+    border: 1px solid var(--border) !important;
+
+    border-radius: 8px !important;
+
+    box-shadow: none !important;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.segmentadores .Select-control:hover {
+    border-color: var(--primary-light) !important;
+
+    box-shadow:
+        0 0 0 2px rgba(13, 79, 158, .05) !important;
+}
+
+
+/* ==========================================================================
+   TEXTO SELECCIONADO
+   ========================================================================== */
+
+.segmentadores .Select-value {
+    color: var(--text) !important;
+}
+
+.segmentadores .Select-value-label {
+    color: var(--text) !important;
+
+    font-weight: 500 !important;
+}
+
+
+/* ==========================================================================
+   PLACEHOLDER
+   ========================================================================== */
+
+.segmentadores .Select-placeholder {
+    color: var(--text-soft) !important;
+}
+
+
+/* ==========================================================================
+   INPUT
+   ========================================================================== */
+
+.segmentadores .Select-input > input {
+    color: var(--text) !important;
+}
+
+
+/* ==========================================================================
+   FLECHA
+   ========================================================================== */
+
+.segmentadores .Select-arrow {
+    border-top-color: var(--primary) !important;
+}
+
+
+/* ==========================================================================
+   MENÚ DROPDOWN
+   ========================================================================== */
+
+.segmentadores .Select-menu-outer {
+    background: white !important;
+
+    border: 1px solid var(--primary) !important;
+
+    border-radius: 8px;
+
+    z-index: 9999 !important;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, .15);
+}
+
+
+/* ==========================================================================
+   OPCIONES
+   ========================================================================== */
+
+.segmentadores .Select-option {
+    background: white !important;
+
+    color: var(--text) !important;
+}
+
+.segmentadores .Select-option:hover {
+    background: #eef4fb !important;
+
+    color: var(--primary) !important;
+}
+
+.segmentadores .Select-option.is-selected {
+    background: #dce9ff !important;
+
+    color: var(--primary) !important;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BOTÓN BORRAR FILTROS
+   ========================================================= */
+
+.btn-borrar-filtros {
+    width: 100%;
+
+    margin-top: 10px;
+    padding: 11px 16px;
+
+    background: white;
+
+    color: var(--primary);
+
+    border: 1px solid var(--primary);
+
+    border-radius: 8px;
+
+    font-family: "Segoe UI", Arial, sans-serif;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.btn-borrar-filtros:hover {
+    background: var(--primary);
+
+    color: white;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 4px 10px rgba(0, 46, 109, .20);
+}
+
+.btn-borrar-filtros:active {
+    transform: translateY(0);
+}

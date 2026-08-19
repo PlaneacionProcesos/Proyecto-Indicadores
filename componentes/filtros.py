@@ -90,6 +90,7 @@ opciones_tipos = [
 ]
 
 def layout_filtros():
+    
     return(
         html.Div(
             className="segmentadores",
