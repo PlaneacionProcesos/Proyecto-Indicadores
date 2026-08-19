@@ -425,6 +425,13 @@ body,
 }
 
 
+#contenido-seccion {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+
 /* =========================================================
    VISUALIZACIONES
    ========================================================= */
@@ -664,10 +671,9 @@ body,
        --------------------------------------------- */
 
     .graficas {
-
+        height: 100%;
         min-height: 0;
-
-        overflow: visible;
+        overflow: hidden;
     }
 
 
@@ -694,18 +700,27 @@ body,
 
     .visualizaciones {
 
-        grid-template-columns: 1fr;
+    flex: 1;
 
-        grid-auto-rows: 380px;
+    min-width: 0;
+    min-height: 0;
 
-        flex: none;
+    display: grid;
 
-        height: auto;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 
-        min-height: 0;
+    grid-auto-rows: minmax(320px, 1fr);
 
-        overflow: visible;
-    }
+    gap: 18px;
+
+    padding:
+        0
+        20px
+        20px;
+
+    overflow-y: auto;
+}
 
 
     .pastel,
@@ -751,10 +766,13 @@ body,
     }
 
     .contenedor {
+    height: calc(100vh - 90px);
 
-        min-height:
-            calc(100vh - 90px);
-    }
+    display: flex;
+    flex-direction: column;
+
+    min-height: 0;
+}
 
 
     .tarjetas {
@@ -896,7 +914,10 @@ body,
 /* Marcador activo */
 
 .marcador.activo {
-    color: #002e6d;
+    background-color: #002051;
+    color: white;
+    font-weight: 600;
+    border-radius: 20px;
 }
 
 
