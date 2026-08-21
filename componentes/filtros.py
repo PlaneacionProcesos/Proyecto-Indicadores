@@ -90,197 +90,208 @@ opciones_tipos = [
 ]
 
 def layout_filtros():
-    
-    return(
-        html.Div(
-            className="segmentadores",
-            children=[
 
-                html.H3("Filtros"),
+    return html.Div(
+        className="contenedor-filtros",
+        id="contenedor-filtros",
 
+        children=[
 
-                # ------------------------------------------------------------------
-                # AÑO
-                # ------------------------------------------------------------------
+            # ======================================================================
+            # BOTÓN / PESTAÑA DE FILTROS
+            # ======================================================================
 
-                html.Label("Año"),
+            html.Button(
+                "◀",
+                id="btn-toggle-filtros",
+                n_clicks=0,
+                className="btn-toggle-filtros",
+            ),
 
-                dcc.Dropdown(
-                    id="filtro-año",
+            # ======================================================================
+            # PANEL DE FILTROS
+            # ======================================================================
 
-                    options=[
-                        {
-                            "label": "Histórico",
-                            "value": "Historico",
-                        },
-                        {
-                            "label": "2026",
-                            "value": "2026",
-                        },
-                        {
-                            "label": "2025",
-                            "value": "2025",
-                        },
-                        {
-                            "label": "2024",
-                            "value": "2024",
-                        },
-                    ],
+            html.Div(
+                className="segmentadores",
+                id="segmentadores",
 
-                    value="Historico",
-                    clearable=False,
-                ),
+                children=[
 
+                    html.H3("Filtros"),
 
-                html.Br(),
+                    # ------------------------------------------------------------------
+                    # AÑO
+                    # ------------------------------------------------------------------
 
+                    html.Label("Año"),
 
-                # ------------------------------------------------------------------
-                # CENTRO UNIVERSITARIO
-                # ------------------------------------------------------------------
+                    dcc.Dropdown(
+                        id="filtro-año",
 
-                html.Label(
-                    "Centro Universitario"
-                ),
+                        options=[
+                            {
+                                "label": "Histórico",
+                                "value": "Historico",
+                            },
+                            {
+                                "label": "2026",
+                                "value": "2026",
+                            },
+                            {
+                                "label": "2025",
+                                "value": "2025",
+                            },
+                            {
+                                "label": "2024",
+                                "value": "2024",
+                            },
+                        ],
 
-                dcc.Dropdown(
-                    id="filtro-centro",
+                        value="Historico",
+                        clearable=False,
+                    ),
 
-                    options=[
-                        {
-                            "label": "Todos",
-                            "value": "Todos",
-                        },
-                        *opciones_centros,
-                    ],
+                    html.Br(),
 
-                    value="Todos",
-                    clearable=False,
-                    searchable=True,
-                ),
+                    # ------------------------------------------------------------------
+                    # CENTRO UNIVERSITARIO
+                    # ------------------------------------------------------------------
 
+                    html.Label(
+                        "Centro Universitario"
+                    ),
 
-                html.Br(),
+                    dcc.Dropdown(
+                        id="filtro-centro",
 
+                        options=[
+                            {
+                                "label": "Todos",
+                                "value": "Todos",
+                            },
+                            *opciones_centros,
+                        ],
 
-                # ------------------------------------------------------------------
-                # PERIODO ACADÉMICO
-                # ------------------------------------------------------------------
+                        value="Todos",
+                        clearable=False,
+                        searchable=True,
+                    ),
 
-                html.Label(
-                    "Periodo Académico"
-                ),
+                    html.Br(),
 
-                dcc.Dropdown(
-                    id="filtro-periodo",
+                    # ------------------------------------------------------------------
+                    # PERIODO ACADÉMICO
+                    # ------------------------------------------------------------------
 
-                    options=[
-                        {
-                            "label": "Todos",
-                            "value": "Todos",
-                        },
-                        *opciones_periodos,
-                    ],
+                    html.Label(
+                        "Periodo Académico"
+                    ),
 
-                    value="Todos",
-                    clearable=False,
-                    searchable=True,
-                ),
+                    dcc.Dropdown(
+                        id="filtro-periodo",
 
+                        options=[
+                            {
+                                "label": "Todos",
+                                "value": "Todos",
+                            },
+                            *opciones_periodos,
+                        ],
 
-                html.Br(),
+                        value="Todos",
+                        clearable=False,
+                        searchable=True,
+                    ),
 
+                    html.Br(),
 
-                # ------------------------------------------------------------------
-                # NIVEL ACADÉMICO
-                # ------------------------------------------------------------------
+                    # ------------------------------------------------------------------
+                    # NIVEL ACADÉMICO
+                    # ------------------------------------------------------------------
 
-                html.Label(
-                    "Nivel Académico"
-                ),
+                    html.Label(
+                        "Nivel Académico"
+                    ),
 
-                dcc.Dropdown(
-                    id="filtro-nivel",
+                    dcc.Dropdown(
+                        id="filtro-nivel",
 
-                    options=[
-                        {
-                            "label": "Todos",
-                            "value": "Todos",
-                        },
-                        *opciones_niveles,
-                    ],
+                        options=[
+                            {
+                                "label": "Todos",
+                                "value": "Todos",
+                            },
+                            *opciones_niveles,
+                        ],
 
-                    value="Todos",
-                    clearable=False,
-                ),
+                        value="Todos",
+                        clearable=False,
+                    ),
 
+                    html.Br(),
 
-                html.Br(),
+                    # ------------------------------------------------------------------
+                    # MODALIDAD
+                    # ------------------------------------------------------------------
 
+                    html.Label(
+                        "Modalidad"
+                    ),
 
-                # ------------------------------------------------------------------
-                # MODALIDAD
-                # ------------------------------------------------------------------
+                    dcc.Dropdown(
+                        id="filtro-modalidad",
 
-                html.Label(
-                    "Modalidad"
-                ),
+                        options=[
+                            {
+                                "label": "Todas",
+                                "value": "Todos",
+                            },
+                            *opciones_modalidades,
+                        ],
 
-                dcc.Dropdown(
-                    id="filtro-modalidad",
+                        value="Todos",
+                        clearable=False,
+                    ),
 
-                    options=[
-                        {
-                            "label": "Todas",
-                            "value": "Todos",
-                        },
-                        *opciones_modalidades,
-                    ],
+                    html.Br(),
 
-                    value="Todos",
-                    clearable=False,
-                ),
+                    # ------------------------------------------------------------------
+                    # TIPO DE INDICADOR
+                    # ------------------------------------------------------------------
 
+                    html.Label(
+                        "Tipo de Indicador"
+                    ),
 
-                html.Br(),
+                    dcc.Dropdown(
+                        id="filtro-tipo",
 
+                        options=[
+                            {
+                                "label": "Todos",
+                                "value": "Todos",
+                            },
+                            *opciones_tipos,
+                        ],
 
-                # ------------------------------------------------------------------
-                # TIPO DE INDICADOR
-                # ------------------------------------------------------------------
+                        value="Todos",
+                        clearable=False,
+                    ),
 
-                html.Label(
-                    "Tipo de Indicador"
-                ),
+                    html.Br(),
 
-                dcc.Dropdown(
-                    id="filtro-tipo",
+                    # ------------------------------------------------------------------
+                    # BOTÓN BORRAR FILTROS
+                    # ------------------------------------------------------------------
 
-                    options=[
-                        {
-                            "label": "Todos",
-                            "value": "Todos",
-                        },
-                        *opciones_tipos,
-                    ],
-
-                    value="Todos",
-                    clearable=False,
-                ),
-
-                html.Br(),
-
-                # ------------------------------------------------------------------
-                # BOTÓN BORRAR FILTROS
-                # ------------------------------------------------------------------
-
-                html.Button(
-                    "Borrar filtros",
-                    id="btn-borrar-filtros",
-                    n_clicks=0,
-                    className="btn-borrar-filtros",
-                ),
-
-            ],
-        )
+                    html.Button(
+                        "Borrar filtros",
+                        id="btn-borrar-filtros",
+                        n_clicks=0,
+                        className="btn-borrar-filtros",
+                    ),
+                ],
+            ),
+        ],
     )

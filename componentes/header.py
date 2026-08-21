@@ -17,48 +17,16 @@ def layout_header():
                 children=[
 
                     html.H1(
-                        "Indicadores Generales"
+                        "Uniminuto Sede Bogotá"
                     ),
 
                     html.Span(
-                        "Indicadores estratégicos y del SGC que permiten "
-                        "hacer seguimiento al cumplimiento de los procesos "
-                        "y al logro de los objetivos institucionales."
+                        "Indicadores de seguimiento SGC - Estrategicos."
                     )
 
                 ]
             ),
 
-            html.Div(
-                className="fecha-actualizacion",
-                children=[
-
-                    html.Img(
-                        className="icono-calendario",
-                        src="assets/calendario.png"
-                    ),
-
-                    html.Div(
-                        className="informacion-periodo",
-                        children=[
-
-                            html.P(
-                                "PERIODO ACADÉMICO"
-                            ),
-
-                            html.Strong(
-                                "Semestre 2"
-                            ),
-
-                            html.Strong(
-                                "Año: 2026"
-                            ),
-
-                        ],
-                    ),
-
-                ],
-            ),
 
         ],
     )

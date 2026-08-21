@@ -218,3 +218,137 @@
 .btn-borrar-filtros:active {
     transform: translateY(0);
 }
+
+/* ==========================================================================
+   CONTENEDOR DEL PANEL DE FILTROS
+   ========================================================================== */
+
+.contenedor-filtros {
+    position: relative;
+
+    flex-shrink: 0;
+
+    width: 300px;
+
+    transition: width .3s ease;
+}
+
+
+/* ==========================================================================
+   TRANSICIÓN DEL PANEL
+   ========================================================================== */
+
+.segmentadores {
+    box-sizing: border-box;
+
+    transition:
+        width .3s ease,
+        padding .3s ease,
+        opacity .2s ease;
+}
+
+
+/* ==========================================================================
+   PANEL OCULTO
+   ========================================================================== */
+
+.segmentadores.oculto {
+
+    width: 0;
+
+    padding-left: 0;
+    padding-right: 0;
+
+    opacity: 0;
+
+    overflow: hidden;
+
+    border-right: none;
+}
+
+
+/* ==========================================================================
+   CONTENEDOR CUANDO LOS FILTROS ESTÁN OCULTOS
+   ========================================================================== */
+
+.contenedor-filtros:has(.segmentadores.oculto) {
+    width: 0;
+}
+
+
+/* ==========================================================================
+   BOTÓN MOSTRAR / OCULTAR
+   ========================================================================== */
+
+.btn-toggle-filtros {
+
+    position: absolute;
+
+    top: 20px;
+    right: -16px;
+
+    z-index: 100;
+
+    width: 32px;
+    height: 42px;
+
+    padding: 0;
+
+    border: 1px solid var(--border);
+    border-left: none;
+
+    border-radius: 0 7px 7px 0;
+
+    background: white;
+
+    color: var(--primary);
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        3px 3px 10px rgba(0, 0, 0, .12);
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        transform .2s ease;
+}
+
+
+.btn-toggle-filtros:hover {
+
+    background: var(--primary);
+
+    color: white;
+
+    transform: translateX(2px);
+}
+
+
+/* ==========================================================================
+   BOTÓN CUANDO LOS FILTROS ESTÁN OCULTOS
+   ========================================================================== */
+
+.segmentadores.oculto + .btn-toggle-filtros {
+
+    position: fixed;
+
+    left: 0;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border-left: 1px solid var(--border);
+
+    border-radius: 0 7px 7px 0;
+}
+
+
+.segmentadores.oculto + .btn-toggle-filtros:hover {
+
+    transform: translate(2px, -50%);
+}
