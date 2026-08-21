@@ -1,5 +1,5 @@
 from dash import Input, Output, ctx, html
-from app import app
+from dashboard import app
 from secciones.resumen import layout_resumen
 from datos import resultados_completos
 from configuraciones.colors import COLORES_AGRUPADORES, COLOR_GRIS
