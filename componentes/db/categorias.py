@@ -1,0 +1,30 @@
+CATEGORIAS_DOCUMENTOS = [
+    {
+        "label": "Profesores",
+        "value": "profesores",
+    },
+    {
+        "label": "Aprendizaje y Evaluación",
+        "value": "aprendizaje_evaluacion",
+    },
+    {
+        "label": "Estudiantes",
+        "value": "estudiantes",
+    },
+    {
+        "label": "Impacto",
+        "value": "impacto",
+    },
+    {
+        "label": "Investigación",
+        "value": "investigacion",
+    },
+    {
+        "label": "SIAC",
+        "value": "siac",
+    },
+    {
+        "label": "Sostenibilidad",
+        "value": "sostenibilidad",
+    },
+]

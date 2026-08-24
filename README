@@ -1,0 +1,6 @@
+# ejemplo de env
+
+MONGODB_USERNAME="You User"
+MONGODB_PASSWORD="You Password"
+MONGODB_URI="mongodb+srv://<your URI>"
+PASSWORD_ADMIN="<Password that do you like>"

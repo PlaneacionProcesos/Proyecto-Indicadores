@@ -9,63 +9,63 @@ def layout_resumen():
         className="graficas",
         children=[
             # ==================================================================
-            # TARJETAS
-            # ==================================================================
-            html.Div(
-                className="tarjetas",
-                children=[
-                    # ----------------------------------------------------------
-                    # KPI 1
-                    # ----------------------------------------------------------
-                    html.Div(
-                        className="tarjeta",
-                        id="tarjeta1",
-                        children=[
-                            html.P("Registros Históricos"),
-                            html.H2(id="kpi-it"),
-                        ],
-                    ),
-                    # ----------------------------------------------------------
-                    # KPI 2
-                    # ----------------------------------------------------------
-                    html.Div(
-                        className="tarjeta",
-                        id="tarjeta2",
-                        children=[
-                            html.P("Indicadores Estratégicos"),
-                            html.H2(id="kpi-ies"),
-                        ],
-                    ),
-                    # ----------------------------------------------------------
-                    # KPI 3
-                    # ----------------------------------------------------------
-                    html.Div(
-                        className="tarjeta",
-                        id="tarjeta3",
-                        children=[
-                            html.P("Indicadores del SGC"),
-                            html.H2(id="kpi-its"),
-                        ],
-                    ),
-                    # ----------------------------------------------------------
-                    # KPI 4
-                    # ----------------------------------------------------------
-                    html.Div(
-                        className="tarjeta",
-                        id="tarjeta4",
-                        children=[
-                            html.P("En construccion"),
-                            html.H2(id="kpi-maximos"),
-                        ],
-                    ),
-                ],
-            ),
-            # ==================================================================
             # VISUALIZACIONES
             # ==================================================================
             html.Div(
                 className="visualizaciones",
                 children=[
+                    # ----------------------------------------------------------
+                    # TARJETAS
+                    # ----------------------------------------------------------
+                    html.Div(
+                        className="tarjetas",
+                        children=[
+                            # ----------------------------------------------------------
+                            # KPI 1
+                            # ----------------------------------------------------------
+                            html.Div(
+                                className="tarjeta",
+                                id="tarjeta1",
+                                children=[
+                                    html.P("Registros Históricos"),
+                                    html.H2(id="kpi-it"),
+                                ],
+                            ),
+                            # ----------------------------------------------------------
+                            # KPI 2
+                            # ----------------------------------------------------------
+                            html.Div(
+                                className="tarjeta",
+                                id="tarjeta2",
+                                children=[
+                                    html.P("Indicadores Estratégicos"),
+                                    html.H2(id="kpi-ies"),
+                                ],
+                            ),
+                            # ----------------------------------------------------------
+                            # KPI 3
+                            # ----------------------------------------------------------
+                            html.Div(
+                                className="tarjeta",
+                                id="tarjeta3",
+                                children=[
+                                    html.P("Indicadores del SGC"),
+                                    html.H2(id="kpi-its"),
+                                ],
+                            ),
+                            # ----------------------------------------------------------
+                            # KPI 4
+                            # ----------------------------------------------------------
+                            html.Div(
+                                className="tarjeta",
+                                id="tarjeta4",
+                                children=[
+                                    html.P("En construccion"),
+                                    html.H2(id="kpi-maximos"),
+                                ],
+                            ),
+                        ],
+                    ),
                     # ----------------------------------------------------------
                     # GRÁFICO PASTEL
                     # ----------------------------------------------------------

@@ -67,6 +67,7 @@
     flex: 0 0 115px;
 
     min-height: 115px;
+    text-align: center;
 }
 
 
@@ -119,6 +120,14 @@
     font-weight: 700;
 }
 
+/* #tarjeta2 {
+    background-color: aqua;
+}
+
+#tarjeta3 {
+    background-color: red;
+} */
+
 
 /* ==========================================================================
    VISUALIZACIONES
@@ -137,6 +146,12 @@
 
     grid-auto-rows: minmax(320px, 1fr);
 
+     /* Primera fila */
+    grid-template-rows: 115px;
+
+    /* Filas siguientes */
+    grid-auto-rows: 320px;
+
     gap: 18px;
 
     padding:
@@ -145,6 +160,11 @@
         20px;
 
     overflow-y: auto;
+}
+
+/* Primera fila: un solo elemento */
+.visualizaciones > :first-child {
+    grid-column: 1 / -1;
 }
 
 

@@ -5,6 +5,8 @@ from datos import resultados_completos
 from configuraciones.colors import COLORES_AGRUPADORES, COLOR_GRIS
 from configuraciones.agrupadores import DESCRIPCIONES_AGRUPADORES
 from componentes.resumen.tabla_agrupadores import tabla_agrupadores
+from componentes.db.callbacks_db import registrar_callbacks_db
+from componentes.db.vistas_crud import layout_documentos
 import pandas as pd
 
 from funciones import (
@@ -26,21 +28,20 @@ import plotly.express as px
     Output("filtro-nivel", "value"),
     Output("filtro-modalidad", "value"),
     Output("filtro-tipo", "value"),
-
     Input("btn-borrar-filtros", "n_clicks"),
-
     prevent_initial_call=True,
 )
 def borrar_filtros(n_clicks):
 
     return (
         "Historico",  # Año
-        "Todos",      # Centro
-        "Todos",      # Periodo
-        "Todos",      # Nivel
-        "Todos",      # Modalidad
-        "Todos",      # Tipo
+        "Todos",  # Centro
+        "Todos",  # Periodo
+        "Todos",  # Nivel
+        "Todos",  # Modalidad
+        "Todos",  # Tipo
     )
+
 
 @app.callback(
     Output("kpi-it", "children"),
@@ -156,7 +157,6 @@ def actualizar_kpis(
 
     kpi_sgc = f"{sgc:,}"
 
-
     # ==========================================================================
     # RETORNAR
     # ==========================================================================
@@ -179,8 +179,6 @@ def actualizar_kpis(
     Output("grafico-barras", "figure"),
     Output("grafico-modalidad", "figure"),
     Output("tabla-agrupadores", "data"),
-
-
     Input("filtro-año", "value"),
     Input("filtro-centro", "value"),
     Input("filtro-periodo", "value"),
@@ -307,7 +305,6 @@ def actualizar_graficas(
             .reset_index(name="cantidad_indicadores")
         )
 
-
         grafico_barras = px.bar(
             datos_barras,
             x="cantidad_indicadores",
@@ -322,25 +319,20 @@ def actualizar_graficas(
         # ==========================================================================
 
         grafico_barras.update_layout(
-
             font=dict(
                 family="Arial",
                 color="#080b0d",
             ),
-
             paper_bgcolor="white",
             plot_bgcolor="white",
-
             margin=dict(
                 l=30,
                 r=30,
                 t=60,
                 b=30,
             ),
-
             showlegend=False,
         )
-
 
         # ==========================================================================
         # EJES
@@ -376,8 +368,7 @@ def actualizar_graficas(
     else:
 
         datos_tabla = (
-            datos_filtrados
-            .groupby("agrupador")["indicador_id"]
+            datos_filtrados.groupby("agrupador")["indicador_id"]
             .nunique()
             .reset_index(name="total_indicadores")
         )
@@ -396,7 +387,6 @@ def actualizar_graficas(
             ]
         ]
 
-
     # ==========================================================================
     # GRÁFICA 4
     # PROMEDIO POR MODALIDAD
@@ -404,15 +394,12 @@ def actualizar_graficas(
 
     if datos_filtrados.empty:
 
-        grafico_modalidad = px.bar(
-            title="No hay datos para los filtros seleccionados"
-        )
+        grafico_modalidad = px.bar(title="No hay datos para los filtros seleccionados")
 
     else:
 
         datos_modalidad = (
-            datos_filtrados
-            .dropna(subset=["modalidad", "resultado"])
+            datos_filtrados.dropna(subset=["modalidad", "resultado"])
             .groupby("modalidad", as_index=False)["resultado"]
             .mean()
             .sort_values("resultado", ascending=False)
@@ -427,7 +414,6 @@ def actualizar_graficas(
             color="modalidad",
         )
 
-
     grafico_modalidad.update_layout(
         font=dict(
             family="Arial",
@@ -435,10 +421,8 @@ def actualizar_graficas(
         ),
         paper_bgcolor="white",
         plot_bgcolor="white",
-
         xaxis_title="Modalidad",
         yaxis_title="Promedio de resultado",
-
         margin=dict(
             l=30,
             r=30,
@@ -464,9 +448,9 @@ def actualizar_graficas(
 # NAVEGACIÓN ENTRE SECCIONES
 # ========================================================================================
 
+
 @app.callback(
     Output("seccion-actual", "data"),
-
     Output("btn-resumen", "className"),
     Output("btn-profesores", "className"),
     Output("btn-aprendizaje-evaluacion", "className"),
@@ -475,7 +459,6 @@ def actualizar_graficas(
     Output("btn-investigacion", "className"),
     Output("btn-siac", "className"),
     Output("btn-sostenibilidad", "className"),
-
     Input("btn-resumen", "n_clicks"),
     Input("btn-profesores", "n_clicks"),
     Input("btn-aprendizaje-evaluacion", "n_clicks"),
@@ -499,7 +482,7 @@ def cambiar_seccion(
     mapa_secciones = {
         "btn-resumen": "resumen",
         "btn-profesores": "profesores",
-        "btn-aprendizaje-evaluacion": "aprendizaje-evaluacion",
+        "btn-aprendizaje-evaluacion": "aprendizaje_evaluacion",
         "btn-estudiantes": "estudiantes",
         "btn-impacto": "impacto",
         "btn-investigacion": "investigacion",
@@ -526,9 +509,11 @@ def cambiar_seccion(
         *clases,
     )
 
+
 # ========================================================================================
 # CONTENIDO DE LA SECCIÓN
 # ========================================================================================
+
 
 @app.callback(
     Output("contenido-seccion", "children"),
@@ -539,25 +524,13 @@ def mostrar_seccion(seccion):
     if seccion == "resumen":
         return layout_resumen()
 
-    return html.Div(
-        className="seccion-en-construccion",
-        children=[
-            html.H2(
-                seccion.replace("-", " ").title()
-            ),
-            html.P(
-                "Esta sección se encuentra en construcción."
-            ),
-        ],
-    )
+    return layout_documentos(seccion)
 
 
 @app.callback(
     Output("segmentadores", "className"),
     Output("btn-toggle-filtros", "children"),
-
     Input("btn-toggle-filtros", "n_clicks"),
-
     prevent_initial_call=True,
 )
 def toggle_filtros(n_clicks):
