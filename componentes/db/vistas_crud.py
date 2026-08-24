@@ -5,7 +5,7 @@ def layout_documentos(categoria=None):
     return html.Div(
         className="gestor-contenedor",
         children=[
-            # Título estilo tabla-agrupadores
+            
             html.H3("Documentos de la Sección", className="gestor-titulo"),
             
             html.Div(

@@ -12,7 +12,6 @@ from componentes.db.crud import (
 
 from componentes.db.categorias import CATEGORIAS_DOCUMENTOS
 
-
 load_dotenv()
 
 PASSWORD_ADMIN = os.getenv("PASSWORD_ADMIN")
@@ -22,10 +21,7 @@ PASSWORD_ADMIN = os.getenv("PASSWORD_ADMIN")
 # CATEGORÍAS VÁLIDAS
 # ==========================================================
 
-CATEGORIAS_VALIDAS = {
-    categoria["value"]
-    for categoria in CATEGORIAS_DOCUMENTOS
-}
+CATEGORIAS_VALIDAS = {categoria["value"] for categoria in CATEGORIAS_DOCUMENTOS}
 
 
 def obtener_nombre_categoria(valor):
@@ -44,6 +40,21 @@ def obtener_nombre_categoria(valor):
 def registrar_callbacks_db(app):
 
     # ======================================================
+    # 5. MOSTRAR / OCULTAR TODO EL GESTOR DE DOCUMENTOS
+    # ======================================================
+    @app.callback(
+        Output("gestor-contenedor", "style"), Input("seccion-actual", "data")
+    )
+    def toggle_visibilidad_gestor(seccion):
+        # Si estamos en resumen, ocultamos todo el contenedor
+        if not seccion or seccion == "resumen":
+            return {"display": "none"}
+
+        # Para las demás secciones, lo mostramos normal
+        # Usamos "flex" porque tu CSS .gestor-contenedor usa display: flex
+        return {"display": "flex", "marginTop": "40px"}
+
+    # ======================================================
     # 1. MOSTRAR / OCULTAR PANEL ADMIN
     # ======================================================
 
@@ -60,7 +71,6 @@ def registrar_callbacks_db(app):
 
         return {"display": "none"}
 
-
     # ======================================================
     # 2. SUBIR DOCUMENTO
     # ======================================================
@@ -69,7 +79,7 @@ def registrar_callbacks_db(app):
         Output("mensaje-subida", "children"),
         Input("upload-documento", "contents"),
         State("upload-documento", "filename"),
-        State("seccion-actual", "data"), 
+        State("seccion-actual", "data"),
         prevent_initial_call=True,
     )
     def procesar_subida(
@@ -109,9 +119,7 @@ def registrar_callbacks_db(app):
                 categoria,
             )
 
-            nombre_categoria = obtener_nombre_categoria(
-                categoria
-            )
+            nombre_categoria = obtener_nombre_categoria(categoria)
 
             return html.Div(
                 (
@@ -128,7 +136,6 @@ def registrar_callbacks_db(app):
                 f"Error al subir el archivo: {str(e)}",
                 style={"color": "red"},
             )
-
 
     # ======================================================
     # 3. RENDERIZAR LISTA DE DOCUMENTOS
@@ -148,7 +155,7 @@ def registrar_callbacks_db(app):
             "value",
         ),
         Input(
-            "seccion-actual", 
+            "seccion-actual",
             "data",
         ),
     )
@@ -157,7 +164,7 @@ def registrar_callbacks_db(app):
         clave,
         categoria,
     ):
-        
+
         # Validar que exista una categoría seleccionada antes de consultar a Mongo
         if not categoria:
             return html.Div(
@@ -176,10 +183,7 @@ def registrar_callbacks_db(app):
                 style={"color": "red"},
             )
 
-        es_admin = (
-            clave
-            and clave == PASSWORD_ADMIN
-        )
+        es_admin = clave and clave == PASSWORD_ADMIN
 
         elementos_lista = []
 
@@ -190,9 +194,7 @@ def registrar_callbacks_db(app):
                 "Sin categoría",
             )
 
-            nombre_categoria = obtener_nombre_categoria(
-                cat_doc
-            )
+            nombre_categoria = obtener_nombre_categoria(cat_doc)
 
             # ------------------------------------------
             # Botón descargar
@@ -236,24 +238,18 @@ def registrar_callbacks_db(app):
                     html.Div(
                         className="gestor-item-info",
                         children=[
-                            html.Span(
-                                doc["nombre"], 
-                                className="gestor-item-titulo"
-                            ),
+                            html.Span(doc["nombre"], className="gestor-item-titulo"),
                             html.Span(
                                 (
                                     f"Categoría: {nombre_categoria} | "
                                     f"Fecha: {doc['fecha'].strftime('%Y-%m-%d')}"
                                 ),
-                                className="gestor-item-meta"
+                                className="gestor-item-meta",
                             ),
-                        ]
+                        ],
                     ),
-                    html.Div(
-                        className="gestor-acciones",
-                        children=botones
-                    )
-                ]
+                    html.Div(className="gestor-acciones", children=botones),
+                ],
             )
 
             elementos_lista.append(item)
@@ -267,18 +263,14 @@ def registrar_callbacks_db(app):
             return html.Div(
                 f"No hay documentos disponibles para la sección '{nombre_seccion_actual}'.",
                 style={
-                    "color": "var(--text-soft)", 
-                    "textAlign": "center", 
-                    "padding": "20px 0", 
-                    "fontWeight": "600"
-                }
+                    "color": "var(--text-soft)",
+                    "textAlign": "center",
+                    "padding": "20px 0",
+                    "fontWeight": "600",
+                },
             )
 
-        return html.Ul(
-            elementos_lista,
-            className="gestor-lista"
-        )
-
+        return html.Ul(elementos_lista, className="gestor-lista")
 
     # ======================================================
     # 4. DESCARGAR / ELIMINAR DOCUMENTO
@@ -330,7 +322,6 @@ def registrar_callbacks_db(app):
         doc_id = trigger_id["index"]
         accion = trigger_id["type"]
 
-
         # ==================================================
         # DESCARGAR
         # ==================================================
@@ -339,9 +330,7 @@ def registrar_callbacks_db(app):
 
             try:
 
-                contenido_bytes, nombre = (
-                    obtener_documento(doc_id)
-                )
+                contenido_bytes, nombre = obtener_documento(doc_id)
 
                 if not contenido_bytes:
 
@@ -349,17 +338,13 @@ def registrar_callbacks_db(app):
                         no_update,
                         html.Div(
                             "No se encontró el documento.",
-                            style={
-                                "color": "red"
-                            },
+                            style={"color": "red"},
                         ),
                     )
 
                 return (
                     dcc.send_bytes(
-                        lambda buffer: buffer.write(
-                            contenido_bytes
-                        ),
+                        lambda buffer: buffer.write(contenido_bytes),
                         nombre,
                     ),
                     no_update,
@@ -370,16 +355,10 @@ def registrar_callbacks_db(app):
                 return (
                     no_update,
                     html.Div(
-                        (
-                            "Error al descargar "
-                            f"el archivo: {str(e)}"
-                        ),
-                        style={
-                            "color": "red"
-                        },
+                        ("Error al descargar " f"el archivo: {str(e)}"),
+                        style={"color": "red"},
                     ),
                 )
-
 
         # ==================================================
         # ELIMINAR
@@ -395,9 +374,7 @@ def registrar_callbacks_db(app):
                     no_update,
                     html.Div(
                         "Archivo eliminado correctamente.",
-                        style={
-                            "color": "green"
-                        },
+                        style={"color": "green"},
                     ),
                 )
 
@@ -406,15 +383,9 @@ def registrar_callbacks_db(app):
                 return (
                     no_update,
                     html.Div(
-                        (
-                            "Error al eliminar "
-                            f"el archivo: {str(e)}"
-                        ),
-                        style={
-                            "color": "red"
-                        },
+                        ("Error al eliminar " f"el archivo: {str(e)}"),
+                        style={"color": "red"},
                     ),
                 )
-
 
         return no_update, no_update
