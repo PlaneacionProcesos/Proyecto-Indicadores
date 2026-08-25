@@ -1,7 +1,4 @@
 from dash import Input, Output, html, ctx
-from secciones.resumen import layout_resumen
-from componentes.db.vistas_crud import layout_documentos
-from secciones.aprendizaje_evaluacion import layout_aprendizaje
 
 
 def registrar_callbacks_navegacion(app):
@@ -54,7 +51,7 @@ def registrar_callbacks_navegacion(app):
         if not ctx.triggered_id:
             seccion = "resumen"
         else:
-            seccion = mapa_secciones[ctx.triggered_id]
+            seccion = mapa_secciones.get(ctx.triggered_id, "resumen")
 
         clases = []
 
@@ -71,8 +68,15 @@ def registrar_callbacks_navegacion(app):
         )
 
 
+    # ======================================================================
+    # CONTROLADOR DE VISIBILIDAD DE SECCIONES
+    # ======================================================================
     @app.callback(
-        Output("contenido-seccion", "children"),
+        Output("vista-resumen", "style"),
+        Output("vista-gestor-documentos", "style"),
+        Output("vista-aprendizaje", "style"),
+        Output("vista-en-construccion", "style"),
+        Output("texto-en-construccion", "children"),
         Input("seccion-actual", "data"),
     )
     def mostrar_seccion(seccion):
@@ -81,35 +85,44 @@ def registrar_callbacks_navegacion(app):
         if not seccion:
             seccion = "resumen"
 
-        # 2. PRIMERO creamos la lista vacía
-        elementos_pantalla = []
+        style_oculto = {"display": "none"}
+        style_resumen = {"display": "flex", "flexDirection": "column", "flex": "1", "minWidth": "0", "minHeight": "0", "overflow": "hidden"}
+        style_gestor = {"display": "block", "padding": "0 20px"}
+        style_aprendizaje = {"display": "block", "padding": "0 20px 20px"}
+        style_construccion = {"display": "block", "padding": "0 20px 20px"}
 
-        # ======================================================================
-        # 3. GESTOR DE DOCUMENTOS (Aparecerá en la parte SUPERIOR de la pantalla)
-        # ======================================================================
-        if seccion != "resumen":
-            elementos_pantalla.append(layout_documentos(categoria=seccion))
-            
-        # ======================================================================
-        # 4. VISTA DE LA SECCIÓN (Aparecerá DEBAJO de los documentos)
-        # ======================================================================
         if seccion == "resumen":
-            elementos_pantalla.append(layout_resumen())
-
-        elif seccion == "aprendizaje_evaluacion":
-            elementos_pantalla.append(layout_aprendizaje())
-
-        # elif seccion == "investigacion":
-        #     elementos_pantalla.append(layout_investigacion())
-        
-        else:
-            # Mensaje por si la pantalla no existe aún
-            elementos_pantalla.append(
-                html.Div(
-                    f"La vista para '{seccion}' aún no está construida.",
-                    style={"padding": "50px", "textAlign": "center"},
-                )
+            return (
+                style_resumen,   # vista-resumen
+                style_oculto,    # vista-gestor-documentos
+                style_oculto,    # vista-aprendizaje
+                style_oculto,    # vista-en-construccion
+                "",
             )
 
-        # 5. Finalmente, devolvemos todo el paquete armado en ese orden
-        return elementos_pantalla
+        elif seccion == "aprendizaje_evaluacion":
+            return (
+                style_oculto,       # vista-resumen
+                style_gestor,       # vista-gestor-documentos
+                style_aprendizaje,  # vista-aprendizaje
+                style_oculto,       # vista-en-construccion
+                "",
+            )
+
+        else:
+            nombres = {
+                "profesores": "Profesores",
+                "estudiantes": "Estudiantes",
+                "impacto": "Impacto",
+                "investigacion": "Investigación",
+                "siac": "SIAC",
+                "sostenibilidad": "Sostenibilidad",
+            }
+            nombre = nombres.get(seccion, seccion)
+            return (
+                style_oculto,        # vista-resumen
+                style_gestor,        # vista-gestor-documentos
+                style_oculto,        # vista-aprendizaje
+                style_construccion,  # vista-en-construccion
+                f"La vista para '{nombre}' aún no está construida.",
+            )

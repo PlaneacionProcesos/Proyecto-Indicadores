@@ -1,4 +1,5 @@
 from dash import Input, Output, html
+from dash.exceptions import PreventUpdate
 from datos import resultados_completos
 from configuraciones.agrupadores import DESCRIPCIONES_AGRUPADORES
 import pandas as pd
@@ -52,7 +53,6 @@ def registrar_callbacks_resumen(app):
         modalidad,
         tipo,
     ):
-
         # --------------------------------------------------------------------------
         # Validar filtro
         # --------------------------------------------------------------------------
@@ -201,7 +201,6 @@ def registrar_callbacks_resumen(app):
         modalidad,
         tipo,
     ):
-
         # --------------------------------------------------------------------------
         # Copiar datos
         # --------------------------------------------------------------------------

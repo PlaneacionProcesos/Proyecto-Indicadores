@@ -40,21 +40,6 @@ def obtener_nombre_categoria(valor):
 def registrar_callbacks_db(app):
 
     # ======================================================
-    # 5. MOSTRAR / OCULTAR TODO EL GESTOR DE DOCUMENTOS
-    # ======================================================
-    @app.callback(
-        Output("gestor-contenedor", "style"), Input("seccion-actual", "data")
-    )
-    def toggle_visibilidad_gestor(seccion):
-        # Si estamos en resumen, ocultamos todo el contenedor
-        if not seccion or seccion == "resumen":
-            return {"display": "none"}
-
-        # Para las demás secciones, lo mostramos normal
-        # Usamos "flex" porque tu CSS .gestor-contenedor usa display: flex
-        return {"display": "flex", "marginTop": "40px"}
-
-    # ======================================================
     # 1. MOSTRAR / OCULTAR PANEL ADMIN
     # ======================================================
 

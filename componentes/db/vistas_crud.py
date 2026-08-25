@@ -3,6 +3,7 @@ from dash import html, dcc
 # Agregamos 'categoria=None' para que acepte el argumento de tu callback de navegación
 def layout_documentos(categoria=None):
     return html.Div(
+        id="gestor-contenedor",
         className="gestor-contenedor",
         children=[
             

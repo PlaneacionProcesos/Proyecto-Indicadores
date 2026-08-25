@@ -3,6 +3,8 @@ from dash import Dash, dcc, html
 from datos import resultados_completos
 
 from secciones.resumen import layout_resumen
+from secciones.aprendizaje_evaluacion import layout_aprendizaje
+from componentes.db.vistas_crud import layout_documentos
 from componentes.header import layout_header
 from componentes.navegacion.navegacion import layout_navegacion
 from componentes.filtros import layout_filtros
@@ -62,12 +64,46 @@ app.layout = html.Div(
                 layout_filtros(),
 
                 # --------------------------------------------------------------------------
-                # CONTENIDO DINÁMICO
+                # CONTENIDO DE SECCIONES (PERSISTENTE)
                 # --------------------------------------------------------------------------
 
                 html.Div(
                     id="contenido-seccion",
-                    # children=layout_resumen(),
+                    children=[
+                        # Vista Resumen
+                        html.Div(
+                            id="vista-resumen",
+                            children=[layout_resumen()],
+                            style={"display": "flex", "flexDirection": "column", "flex": "1", "minWidth": "0", "minHeight": "0", "overflow": "hidden"},
+                        ),
+
+                        # Gestor de Documentos (para secciones no-resumen)
+                        html.Div(
+                            id="vista-gestor-documentos",
+                            children=[layout_documentos()],
+                            style={"display": "none"},
+                        ),
+
+                        # Vista Aprendizaje y Evaluación
+                        html.Div(
+                            id="vista-aprendizaje",
+                            children=[layout_aprendizaje()],
+                            style={"display": "none"},
+                        ),
+
+                        # Vista para secciones en construcción
+                        html.Div(
+                            id="vista-en-construccion",
+                            children=[
+                                html.Div(
+                                    id="texto-en-construccion",
+                                    children="La vista para esta sección aún no está construida.",
+                                    style={"padding": "50px", "textAlign": "center", "fontSize": "16px", "color": "#666"},
+                                )
+                            ],
+                            style={"display": "none"},
+                        ),
+                    ],
                 ),
             ],
         ),

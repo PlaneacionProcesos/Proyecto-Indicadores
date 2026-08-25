@@ -1,23 +1,27 @@
 from dash import dash_table
-from configuraciones.colors import *
+from configuraciones.colors import (
+    COLOR_TABLA_ENCA,
+    COLOR_BLANCO,
+    COLOR_PRIMARIO,
+)
 
 
 def tabla_aprendizaje():
 
     return dash_table.DataTable(
-        id="tabla-agrupadores",
+        id="tabla-aprendizaje",
         columns=[
             {
-                "name": "2024",
-                "id": "año-2024",
+                "name": "Agrupador",
+                "id": "agrupador",
             },
             {
-                "name": "2025",
-                "id": "año-2025",
+                "name": "Descripción",
+                "id": "descripcion",
             },
             {
-                "name": "2026",
-                "id": "año-2026",
+                "name": "Total de indicadores",
+                "id": "total_indicadores",
             },
         ],
         data=[],
