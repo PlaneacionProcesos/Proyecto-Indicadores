@@ -27,6 +27,11 @@
 .marcador {
     position: relative;
 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
     padding: 9px 18px;
 
     border: none;
@@ -45,11 +50,18 @@
         background .2s ease;
 }
 
+.icono-marcador {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: inline-block;
+}
+
 
 /* Hover */
 
 .marcador:hover {
-    color: #002e6d;
+    color: #156082;
 
     background: #f4f7fb;
 
@@ -60,7 +72,7 @@
 /* Marcador activo */
 
 .marcador.activo {
-    background-color: #002051;
+    background-color: #4995b8;
     color: white;
     font-weight: 600;
     border-radius: 20px;

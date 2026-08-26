@@ -42,7 +42,7 @@ def separar_responsable_area(texto):
 # ========================================================================================
 
 df = pd.read_excel(
-    "data/Matriz de Indicadores Estratégicos_22072026.xlsx"
+    "etl/matriz.xlsx"
 )
 
 

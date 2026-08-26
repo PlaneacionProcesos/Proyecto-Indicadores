@@ -27,6 +27,11 @@ def layout_header():
                 ]
             ),
 
+            html.Img(
+                className="adorno-lineas",
+                src="assets/adorno_header_transparente_110px.png"
+            )
+
 
         ],
     )

@@ -75,6 +75,12 @@ def registrar_callbacks_navegacion(app):
         Output("vista-resumen", "style"),
         Output("vista-gestor-documentos", "style"),
         Output("vista-aprendizaje", "style"),
+        Output("vista-profesores", "style"),
+        Output("vista-estudiantes", "style"),
+        Output("vista-impacto", "style"),
+        Output("vista-investigacion", "style"),      
+        Output("vista-siac", "style"),
+        Output("vista-sostenibilidad", "style"),
         Output("vista-en-construccion", "style"),
         Output("texto-en-construccion", "children"),
         Input("seccion-actual", "data"),
@@ -89,40 +95,149 @@ def registrar_callbacks_navegacion(app):
         style_resumen = {"display": "flex", "flexDirection": "column", "flex": "1", "minWidth": "0", "minHeight": "0", "overflow": "hidden"}
         style_gestor = {"display": "block", "padding": "0 20px"}
         style_aprendizaje = {"display": "block", "padding": "0 20px 20px"}
+        style_profesores = {"display": "block", "padding": "0 20px 20px"}
+        style_estudiantes= {"display": "block", "padding": "0 20px 20px"}
+        style_impacto= {"display": "block", "padding": "0 20px 20px"}
+        style_investigacion= {"display": "block", "padding": "0 20px 20px"}
+        style_siac= {"display": "block", "padding": "0 20px 20px"}
+        style_sostenibilidad= {"display": "block", "padding": "0 20px 20px"}
         style_construccion = {"display": "block", "padding": "0 20px 20px"}
 
         if seccion == "resumen":
             return (
-                style_resumen,   # vista-resumen
-                style_oculto,    # vista-gestor-documentos
-                style_oculto,    # vista-aprendizaje
-                style_oculto,    # vista-en-construccion
+                style_resumen,       # vista-resumen
+                style_oculto,        # vista-gestor-documentos
+                style_oculto,        # vista-aprendizaje
+                style_oculto,        # vista-profesores
+                style_oculto,        # vista-en-estudiantes
+                style_oculto,        # vista-en-impacto   
+                style_oculto,        # vista-en-investigacion    
+                style_oculto,        # vista-en-siac 
+                style_oculto,        # vista-en-sostenibilidad
+                style_oculto,        # vista-en-construccion
                 "",
             )
 
         elif seccion == "aprendizaje_evaluacion":
             return (
-                style_oculto,       # vista-resumen
-                style_gestor,       # vista-gestor-documentos
-                style_aprendizaje,  # vista-aprendizaje
-                style_oculto,       # vista-en-construccion
+                style_oculto,        # vista-resumen
+                style_gestor,        # vista-gestor-documentos
+                style_aprendizaje,   # vista-aprendizaje
+                style_oculto,        # vista-profesores
+                style_oculto,        # vista-en-estudiantes
+                style_oculto,        # vista-en-impacto    
+                style_oculto,        # vista-en-investigacion  
+                style_oculto,        # vista-en-siac     
+                style_oculto,        # vista-en-sostenibilidad
+                style_oculto,        # vista-en-construccion
+                "",
+            )
+
+        elif seccion == "profesores":
+            return (
+                style_oculto,        # vista-resumen
+                style_gestor,        # vista-gestor-documentos
+                style_oculto,        # vista-aprendizaje
+                style_profesores,    # vista-profesores
+                style_oculto,        # vista-en-estudiantes
+                style_oculto,        # vista-en-impacto     
+                style_oculto,        # vista-en-investigacion 
+                style_oculto,        # vista-en-siac   
+                style_oculto,        # vista-en-sostenibilidad
+                style_oculto,        # vista-en-construccion                
+                "",
+            )
+
+        elif seccion == "estudiantes":
+            return (
+                style_oculto,        # vista-resumen
+                style_gestor,        # vista-gestor-documentos
+                style_oculto,        # vista-aprendizaje
+                style_oculto,        # vista-profesores
+                style_estudiantes,   # vista-en-estudiantes
+                style_oculto,        # vista-en-impacto   
+                style_oculto,        # vista-en-investigacion   
+                style_oculto,        # vista-en-siac  
+                style_oculto,        # vista-en-sostenibilidad
+                style_oculto,        # vista-en-construccion
+                "",
+            )
+
+        elif seccion == "impacto":
+            return (
+                style_oculto,        # vista-resumen
+                style_gestor,        # vista-gestor-documentos
+                style_oculto,        # vista-aprendizaje
+                style_oculto,        # vista-profesores
+                style_oculto,        # vista-en-estudiantes
+                style_impacto,       # vista-en-impacto  
+                style_oculto,        # vista-en-investigacion  
+                style_oculto,        # vista-en-siac      
+                style_oculto,        # vista-en-sostenibilidad
+                style_oculto,        # vista-en-construccion
+                "",
+            )
+
+        elif seccion == "investigacion":
+            return (
+                style_oculto,        # vista-resumen
+                style_gestor,        # vista-gestor-documentos
+                style_oculto,        # vista-aprendizaje
+                style_oculto,        # vista-profesores
+                style_oculto,        # vista-en-estudiantes
+                style_oculto,        # vista-en-impacto  
+                style_investigacion, # vista-en-investigacion 
+                style_oculto,        # vista-en-siac    
+                style_oculto,        # vista-en-sostenibilidad                            
+                style_oculto,        # vista-en-construccion
+                "",
+            )
+
+        elif seccion == "siac":
+            return (
+                style_oculto,        # vista-resumen
+                style_gestor,        # vista-gestor-documentos
+                style_oculto,        # vista-aprendizaje
+                style_oculto,        # vista-profesores
+                style_oculto,        # vista-en-estudiantes
+                style_oculto,        # vista-en-impacto  
+                style_oculto,        # vista-en-investigacion 
+                style_siac,          # vista-en-siac  
+                style_oculto,        # vista-en-sostenibilidad
+                style_oculto,        # vista-en-construccion
+                "",
+            )
+
+        elif seccion == "sostenibilidad":
+            return (
+                style_oculto,        # vista-resumen
+                style_gestor,        # vista-gestor-documentos
+                style_oculto,        # vista-aprendizaje
+                style_oculto,        # vista-profesores
+                style_oculto,        # vista-en-estudiantes
+                style_oculto,        # vista-en-impacto  
+                style_oculto,        # vista-en-investigacion 
+                style_oculto,          # vista-en-siac  
+                style_sostenibilidad,        # vista-en-sostenibilidad
+                style_oculto,        # vista-en-construccion
                 "",
             )
 
         else:
             nombres = {
-                "profesores": "Profesores",
-                "estudiantes": "Estudiantes",
-                "impacto": "Impacto",
-                "investigacion": "Investigación",
-                "siac": "SIAC",
-                "sostenibilidad": "Sostenibilidad",
+                "sin-datos": "Sin-Datos",
             }
             nombre = nombres.get(seccion, seccion)
             return (
                 style_oculto,        # vista-resumen
                 style_gestor,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
+                style_oculto,        # vista-profesores
+                style_oculto,        # vista-estudiantes
+                style_oculto,        # vista-impacto    
+                style_oculto,        # vista-en-investigacion  
+                style_oculto,        # vista-en-siac    
+                style_oculto,        # vista-en-sostenibilidad                            
                 style_construccion,  # vista-en-construccion
                 f"La vista para '{nombre}' aún no está construida.",
             )

@@ -13,7 +13,7 @@ def layout_aprendizaje():
                 className="tabla-aprendizaje",
                 children=[
                     html.H3(
-                            "Indicadores por agrupador",
+                            "Indicadores - Años (2024-2026)",
                             className="titulo-tabla",
                         ),
                     html.Div(

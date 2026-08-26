@@ -3,10 +3,10 @@ from datos import resultados_completos
 import pandas as pd
 
 
-def registrar_callback_aprendizaje(app):
+def registrar_callback_investigacion(app):
 
     @app.callback(
-        Output("tabla-aprendizaje", "data"),
+        Output("tabla-investigacion", "data"),
         Input("filtro-año", "value"),
         Input("filtro-centro", "value"),
         Input("filtro-periodo", "value"),
@@ -69,8 +69,21 @@ def registrar_callback_aprendizaje(app):
         else:
             # Filtrar registros del agrupador
             datos_ae = datos_filtrados[
-                datos_filtrados["agrupador"] == "Aprendizaje y Evaluacion"
+                datos_filtrados["agrupador"] == "Investigacion"
             ]
+
+            if datos_ae.empty:
+                df_resultado = pd.DataFrame(
+                    columns=[
+                        "nombre_indicador",
+                        "año-2024",
+                        "año-2025",
+                        "año-2026",
+                        "variacion-ultimos_dos",
+                        "porcentaje_variacion",
+                    ]
+                )
+                return df_resultado.to_dict("records")
 
             # Indicadores únicos del agrupador
             indicadores = datos_ae["numero_ind"].drop_duplicates()

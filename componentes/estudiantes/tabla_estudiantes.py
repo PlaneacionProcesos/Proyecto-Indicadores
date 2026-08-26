@@ -5,11 +5,10 @@ from configuraciones.colors import (
     COLOR_PRIMARIO,
 )
 
-
-def tabla_aprendizaje():
+def tabla_estudiantes():
 
     return dash_table.DataTable(
-        id="tabla-aprendizaje",
+        id="tabla-estudiantes",
         columns=[
             {
                 "name": "Indicador",

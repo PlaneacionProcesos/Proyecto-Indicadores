@@ -128,21 +128,21 @@ def registrar_callbacks_resumen(app):
         # ==========================================================================
 
         def total_registros(df):
-         return df["indicador_id"].nunique()
+            return df["numero_ind"].nunique()
 
 
         def total_indicadores_estrategicos(df):
 
             return df[
                 df["tipo de indicador"] == "Estrategico"
-            ]["indicador_id"].nunique()
+            ]["numero_ind"].nunique()
 
 
         def total_indicadores_sgc(df):
 
             return df[
                 df["tipo de indicador"] == "SGC"
-            ]["indicador_id"].nunique()
+            ]["numero_ind"].nunique()
 
 
         total = total_registros(datos_filtrados)
@@ -306,7 +306,7 @@ def registrar_callbacks_resumen(app):
         else:
 
             datos_barras = (
-                datos_filtrados.groupby("macroproceso")["indicador_id"]
+                datos_filtrados.groupby("macroproceso")["numero_ind"]
                 .nunique()
                 .reset_index(name="cantidad_indicadores")
             )
@@ -374,7 +374,7 @@ def registrar_callbacks_resumen(app):
         else:
 
             datos_tabla = (
-                datos_filtrados.groupby("agrupador")["indicador_id"]
+                datos_filtrados.groupby("agrupador")["numero_ind"]
                 .nunique()
                 .reset_index(name="total_indicadores")
             )
