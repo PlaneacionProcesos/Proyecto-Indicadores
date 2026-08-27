@@ -40,16 +40,48 @@ def obtener_nombre_categoria(valor):
 def registrar_callbacks_db(app):
 
     # ======================================================
-    # 1. MOSTRAR / OCULTAR PANEL ADMIN
+    # 1. MOSTRAR / OCULTAR ZONA DE LOGIN SECRETA (3 CLICS)
+    # ======================================================
+
+    @app.callback(
+        Output("zona-login-admin", "style"),
+        Output("input-clave-admin", "value"),
+        Input("gestor-titulo-secreto", "n_clicks"),
+        Input("btn-cerrar-admin", "n_clicks"),
+        State("zona-login-admin", "style"),
+        prevent_initial_call=True,
+    )
+    def toggle_login_secreto(clics_titulo, clics_cerrar, estilo_actual):
+        trigger = ctx.triggered_id
+
+        if trigger == "btn-cerrar-admin":
+            return {"display": "none"}, ""
+
+        if trigger == "gestor-titulo-secreto" and clics_titulo:
+            # Se activa cuando se alcanzan 3 clics (o múltiplos de 3: 3, 6, 9...)
+            if clics_titulo >= 3 and clics_titulo % 3 == 0:
+                esta_visible = estilo_actual and estilo_actual.get("display") != "none"
+                nuevo_estilo = {"display": "none"} if esta_visible else {"display": "flex"}
+                return nuevo_estilo, no_update
+
+        return no_update, no_update
+
+    # ======================================================
+    # 2. MOSTRAR / OCULTAR PANEL ADMIN (SUBIDA DE ARCHIVOS)
     # ======================================================
 
     @app.callback(
         Output("panel-admin", "style"),
         Input("btn-login-admin", "n_clicks"),
+        Input("btn-cerrar-admin", "n_clicks"),
         State("input-clave-admin", "value"),
         prevent_initial_call=True,
     )
-    def verificar_admin(n_clicks, clave):
+    def verificar_admin(n_clicks_login, n_clicks_cerrar, clave):
+        trigger = ctx.triggered_id
+
+        if trigger == "btn-cerrar-admin":
+            return {"display": "none"}
 
         if clave and clave == PASSWORD_ADMIN:
             return {"display": "block"}

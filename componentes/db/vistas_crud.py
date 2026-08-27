@@ -7,14 +7,23 @@ def layout_documentos(categoria=None):
         className="gestor-contenedor",
         children=[
             
-            html.H3("Documentos de la Sección", className="gestor-titulo"),
+            # Título secreto: al hacer 3 clics se activa la barra de autenticación
+            html.H3(
+                "Documentos de la Sección", 
+                id="gestor-titulo-secreto", 
+                n_clicks=0,
+                className="gestor-titulo",
+                style={"userSelect": "none", "cursor": "default"}
+            ),
             
             html.Div(
                 className="gestor-cuerpo",
                 children=[
-                    # Zona de Autenticación
+                    # Zona de Autenticación (Oculta por defecto)
                     html.Div(
+                        id="zona-login-admin",
                         className="gestor-login",
+                        style={"display": "none"},
                         children=[
                             html.Label("Acceso Admin:"),
                             dcc.Input(
@@ -28,6 +37,13 @@ def layout_documentos(categoria=None):
                                 id="btn-login-admin", 
                                 n_clicks=0,
                                 className="btn-admin"
+                            ),
+                            html.Button(
+                                "✕", 
+                                id="btn-cerrar-admin", 
+                                n_clicks=0,
+                                className="btn-cerrar-admin",
+                                title="Ocultar acceso admin"
                             ),
                         ]
                     ),

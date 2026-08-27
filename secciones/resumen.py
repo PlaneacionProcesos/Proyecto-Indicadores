@@ -21,47 +21,87 @@ def layout_resumen():
                         className="tarjetas",
                         children=[
                             # ----------------------------------------------------------
-                            # KPI 1
+                            # KPI 1: Registros Históricos
                             # ----------------------------------------------------------
                             html.Div(
                                 className="tarjeta",
                                 id="tarjeta1",
                                 children=[
-                                    html.P("Registros Históricos"),
-                                    html.H2(id="kpi-it"),
+                                    html.Img(
+                                        src="assets/indicadores_totales_icon.png", 
+                                        className="icono-kpi",
+                                        alt="Icono Registros",
+                                    ),
+                                    html.Div(
+                                        className="info-kpi",
+                                        children=[
+                                            html.H2(id="kpi-it"),
+                                            html.P("Registros Históricos"),
+                                        ],
+                                    ),
                                 ],
                             ),
                             # ----------------------------------------------------------
-                            # KPI 2
+                            # KPI 2: Indicadores Estratégicos
                             # ----------------------------------------------------------
                             html.Div(
                                 className="tarjeta",
                                 id="tarjeta2",
                                 children=[
-                                    html.P("Indicadores Estratégicos"),
-                                    html.H2(id="kpi-ies"),
+                                    html.Img(
+                                        src="assets/indicadores_estrategicos_icon.png",  
+                                        className="icono-kpi",
+                                        alt="Icono Estratégicos",
+                                    ),
+                                    html.Div(
+                                        className="info-kpi",
+                                        children=[
+                                            html.H2(id="kpi-ies"),
+                                            html.P("Indicadores Estratégicos"),
+                                        ],
+                                    ),
                                 ],
                             ),
                             # ----------------------------------------------------------
-                            # KPI 3
+                            # KPI 3: Indicadores del SGC
                             # ----------------------------------------------------------
                             html.Div(
                                 className="tarjeta",
                                 id="tarjeta3",
                                 children=[
-                                    html.P("Indicadores del SGC"),
-                                    html.H2(id="kpi-its"),
+                                    html.Img(
+                                        src="assets/indicadores_sgc_icon.png",  
+                                        className="icono-kpi",
+                                        alt="Icono SGC",
+                                    ),
+                                    html.Div(
+                                        className="info-kpi",
+                                        children=[
+                                            html.H2(id="kpi-its"),
+                                            html.P("Indicadores del SGC"),
+                                        ],
+                                    ),
                                 ],
                             ),
                             # ----------------------------------------------------------
-                            # KPI 4
+                            # KPI 4: En Construcción
                             # ----------------------------------------------------------
                             html.Div(
                                 className="tarjeta",
                                 id="tarjeta4",
                                 children=[
-                                    html.P("En construccion"),
-                                    html.H2(id="kpi-maximos"),
+                                    html.Img(
+                                        src="assets/iconos/kpi_construccion.png",  # <- Pon aquí la dirección de la imagen
+                                        className="icono-kpi",
+                                        alt="Icono En Construcción",
+                                    ),
+                                    html.Div(
+                                        className="info-kpi",
+                                        children=[
+                                            html.H2(id="kpi-maximos"),
+                                            html.P("En construccion"),
+                                        ],
+                                    ),
                                 ],
                             ),
                         ],

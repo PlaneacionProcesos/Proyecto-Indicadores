@@ -32,7 +32,6 @@ def registrar_callbacks_resumen(app):
             "Todos",  # Tipo
         )
 
-
     @app.callback(
         Output("kpi-it", "children"),
         Output("kpi-ies", "children"),
@@ -105,7 +104,9 @@ def registrar_callbacks_resumen(app):
 
         if nivel != "Todos":
 
-            datos_filtrados = datos_filtrados[datos_filtrados["nivel academico"] == nivel]
+            datos_filtrados = datos_filtrados[
+                datos_filtrados["nivel academico"] == nivel
+            ]
 
         # --------------------------------------------------------------------------
         # FILTRO MODALIDAD
@@ -121,7 +122,9 @@ def registrar_callbacks_resumen(app):
 
         if tipo != "Todos":
 
-            datos_filtrados = datos_filtrados[datos_filtrados["tipo de indicador"] == tipo]
+            datos_filtrados = datos_filtrados[
+                datos_filtrados["tipo de indicador"] == tipo
+            ]
 
         # ==========================================================================
         # KPIs
@@ -130,20 +133,13 @@ def registrar_callbacks_resumen(app):
         def total_registros(df):
             return df["numero_ind"].nunique()
 
-
         def total_indicadores_estrategicos(df):
 
-            return df[
-                df["tipo de indicador"] == "Estrategico"
-            ]["numero_ind"].nunique()
-
+            return df[df["tipo de indicador"] == "Estrategico"]["numero_ind"].nunique()
 
         def total_indicadores_sgc(df):
 
-            return df[
-                df["tipo de indicador"] == "SGC"
-            ]["numero_ind"].nunique()
-
+            return df[df["tipo de indicador"] == "SGC"]["numero_ind"].nunique()
 
         total = total_registros(datos_filtrados)
 
@@ -175,11 +171,9 @@ def registrar_callbacks_resumen(app):
             en_contruccion,
         )
 
-
     # ========================================================================================
     #                                      GRÁFICAS
     # ========================================================================================
-
 
     @app.callback(
         Output("grafico-pastel", "figure"),
@@ -241,7 +235,9 @@ def registrar_callbacks_resumen(app):
 
         if nivel != "Todos":
 
-            datos_filtrados = datos_filtrados[datos_filtrados["nivel academico"] == nivel]
+            datos_filtrados = datos_filtrados[
+                datos_filtrados["nivel academico"] == nivel
+            ]
 
         # --------------------------------------------------------------------------
         # FILTRO MODALIDAD
@@ -257,7 +253,9 @@ def registrar_callbacks_resumen(app):
 
         if tipo != "Todos":
 
-            datos_filtrados = datos_filtrados[datos_filtrados["tipo de indicador"] == tipo]
+            datos_filtrados = datos_filtrados[
+                datos_filtrados["tipo de indicador"] == tipo
+            ]
 
         # ==========================================================================
         # GRÁFICO PASTEL
@@ -273,14 +271,33 @@ def registrar_callbacks_resumen(app):
                 "resultado"
             ].sum()
 
-            grafico_pastel = px.pie(
-                datos_pastel,
-                names="modalidad",
-                values="resultado",
-                title="Distribución de resultados por modalidad",
-            )
+        colores_modalidad = {
+            "Presencial": "#053074",
+            "Virtual": "#36A2EB",
+            "Distancia": "#FED103",
+            "No Aplica": "#AEAEAE",
+        }
+
+        grafico_pastel = px.pie(
+            datos_pastel,
+            names="modalidad",
+            values="resultado",
+            title="Distribución de resultados por modalidad",
+            color="modalidad",
+            color_discrete_map=colores_modalidad,
+        )
 
         grafico_pastel.update_layout(
+            title=dict(
+                text="Distribución de resultados por modalidad",
+                x=0.5,
+                xanchor="center",
+                font=dict(
+                    family="Arial",
+                    size=18,
+                    color="#080b0d",
+                ),
+            ),
             font=dict(
                 family="Arial",
                 color="#080b0d",
@@ -295,8 +312,15 @@ def registrar_callbacks_resumen(app):
             ),
         )
 
+        grafico_pastel.update_traces(
+            textfont=dict(
+                color="black",
+                size=14,
+            )
+        )
+
         # ==========================================================================
-        # GRÁFICO DE BARRAS
+        # GRÁFICO DE BARRAS APILADAS - INDICADOR X MARCROPROCESO
         # ==========================================================================
 
         if datos_filtrados.empty:
@@ -400,7 +424,9 @@ def registrar_callbacks_resumen(app):
 
         if datos_filtrados.empty:
 
-            grafico_modalidad = px.bar(title="No hay datos para los filtros seleccionados")
+            grafico_modalidad = px.bar(
+                title="No hay datos para los filtros seleccionados"
+            )
 
         else:
 
@@ -411,6 +437,12 @@ def registrar_callbacks_resumen(app):
                 .sort_values("resultado", ascending=False)
             )
 
+            colores_modalidad = {
+                "Presencial": "#053074",
+                "Distancia": "#FED103",
+                "No Aplica": "#AEAEAE",
+            }
+
             grafico_modalidad = px.bar(
                 datos_modalidad,
                 x="modalidad",
@@ -418,24 +450,38 @@ def registrar_callbacks_resumen(app):
                 title="Promedio de resultados por modalidad",
                 text_auto=".2f",
                 color="modalidad",
+                color_discrete_map=colores_modalidad,
             )
 
-        grafico_modalidad.update_layout(
-            font=dict(
-                family="Arial",
-                color="#080b0d",
-            ),
-            paper_bgcolor="white",
-            plot_bgcolor="white",
-            xaxis_title="Modalidad",
-            yaxis_title="Promedio de resultado",
-            margin=dict(
-                l=30,
-                r=30,
-                t=60,
-                b=30,
-            ),
-        )
+            grafico_modalidad.update_traces(textposition="outside")
+
+            grafico_modalidad.update_yaxes(visible=False)
+
+            grafico_modalidad.update_layout(
+                title=dict(
+                    x=0.5,
+                    xanchor="center",
+                    font=dict(
+                        family="Arial",
+                        size=18,
+                        color="#080b0d",
+                    ),
+                ),
+                font=dict(
+                    family="Arial",
+                    color="#080b0d",
+                ),
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                xaxis_title="Modalidad",
+                yaxis_title="Promedio de resultado",
+                margin=dict(
+                    l=30,
+                    r=30,
+                    t=60,
+                    b=30,
+                ),
+            )
 
         # ==========================================================================
         # RETORNAR GRÁFICAS

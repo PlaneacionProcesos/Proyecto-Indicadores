@@ -75,7 +75,7 @@
 .tarjeta {
     min-width: 0;
 
-    padding: 16px;
+    padding: 12px 18px;
 
     background: white;
 
@@ -85,6 +85,11 @@
 
     box-shadow:
         0 4px 12px rgba(0, 0, 0, .08);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
 
     transition:
         transform .2s ease,
@@ -99,35 +104,70 @@
         0 8px 20px rgba(0, 0, 0, .12);
 }
 
-
-.tarjeta p {
-    margin: 0 0 8px;
-
-    color: var(--text-soft);
-
-    font-size: 12px;
-    font-weight: 600;
-
-    text-transform: uppercase;
+.icono-kpi {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    max-width: 44px;
+    max-height: 44px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
+.info-kpi {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex: 1;
+    min-width: 0;
+}
 
 .tarjeta h2 {
-    margin: 0;
+    margin: 0 0 2px;
 
     color: var(--primary);
 
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
 }
 
-/* #tarjeta2 {
-    background-color: aqua;
+.tarjeta p {
+    margin: 0;
+
+    color: var(--text-soft);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-#tarjeta3 {
-    background-color: red;
-} */
+/*  COLORES INDIVIDUALES PARA CADA KPI    */ 
+#tarjeta1 h2,
+#tarjeta1 p {
+    color: #215F9A;
+}
+
+#tarjeta2 h2,
+#tarjeta2 p {
+    color: #4E95D9;
+}
+
+#tarjeta3 h2,
+#tarjeta3 p {
+    color: #A6CAEC;
+}
+
+
 
 
 /* ==========================================================================
@@ -314,7 +354,7 @@
 
     color: white;
 
-    font-size: 18px;
+    font-size: 18¿px;
     font-weight: 700;
 
     border-bottom: 3px solid var(--green);

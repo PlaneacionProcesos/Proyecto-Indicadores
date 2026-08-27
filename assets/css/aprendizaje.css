@@ -1,8 +1,14 @@
-﻿/* ==========================================================================
-   SECCIÓN APRENDIZAJE Y EVALUACIÓN
+/* ==========================================================================
+   SECCIONES: CONTENEDORES PRINCIPALES
    ========================================================================== */
 
-.contenedor-aprendizaje {
+.contenedor-aprendizaje,
+.contenedor-profesores,
+.contenedor-estudiantes,
+.contenedor-impacto,
+.contenedor-investigacion,
+.contenedor-siac,
+.contenedor-sostenibilidad {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -13,10 +19,16 @@
 }
 
 /* =========================================================
-   TABLA DE APRENDIZAJE
+   TARJETAS DE TABLAS POR SECCIÓN
    ========================================================= */
 
-.tabla-aprendizaje {
+.tabla-aprendizaje,
+.tabla-profesores,
+.tabla-estudiantes,
+.tabla-impacto,
+.tabla-investigacion,
+.tabla-siac,
+.tabla-sostenibilidad {
     min-width: 0;
     min-height: 320px;
     background: white;
@@ -31,10 +43,16 @@
 }
 
 /* =========================================================
-   LÍNEA SUPERIOR DE LA TARJETA
+   LÍNEA SUPERIOR DECORATIVA DE CADA TARJETA
    ========================================================= */
 
-.tabla-aprendizaje::before {
+.tabla-aprendizaje::before,
+.tabla-profesores::before,
+.tabla-estudiantes::before,
+.tabla-impacto::before,
+.tabla-investigacion::before,
+.tabla-siac::before,
+.tabla-sostenibilidad::before {
     content: "";
     display: block;
     width: 100%;
@@ -44,31 +62,219 @@
 }
 
 /* =========================================================
-   DATATABLE EN APRENDIZAJE
+   DATATABLE EN CADA SECCIÓN
    ========================================================= */
 
-.tabla-aprendizaje .dash-table-container {
+.tabla-aprendizaje .dash-table-container,
+.tabla-profesores .dash-table-container,
+.tabla-estudiantes .dash-table-container,
+.tabla-impacto .dash-table-container,
+.tabla-investigacion .dash-table-container,
+.tabla-siac .dash-table-container,
+.tabla-sostenibilidad .dash-table-container {
     width: 100%;
     min-height: 0;
     overflow: hidden;
 }
 
-.tabla-aprendizaje .dash-spreadsheet-container {
+.tabla-aprendizaje .dash-spreadsheet-container,
+.tabla-profesores .dash-spreadsheet-container,
+.tabla-estudiantes .dash-spreadsheet-container,
+.tabla-impacto .dash-spreadsheet-container,
+.tabla-investigacion .dash-spreadsheet-container,
+.tabla-siac .dash-spreadsheet-container,
+.tabla-sostenibilidad .dash-spreadsheet-container {
     overflow-y: auto !important;
     overflow-x: auto !important;
     max-height: 500px;
 }
 
-.tabla-aprendizaje .dash-header {
+.tabla-aprendizaje .dash-header,
+.tabla-profesores .dash-header,
+.tabla-estudiantes .dash-header,
+.tabla-impacto .dash-header,
+.tabla-investigacion .dash-header,
+.tabla-siac .dash-header,
+.tabla-sostenibilidad .dash-header {
     font-weight: 700 !important;
 }
 
-.tabla-aprendizaje .dash-cell {
+/* =========================================================
+   ICONOS A LA IZQUIERDA DEL TEXTO EN CABECERAS
+   ========================================================= */
+
+.tabla-aprendizaje th.dash-header,
+.tabla-profesores th.dash-header,
+.tabla-estudiantes th.dash-header,
+.tabla-impacto th.dash-header,
+.tabla-investigacion th.dash-header,
+.tabla-siac th.dash-header,
+.tabla-sostenibilidad th.dash-header {
+    font-weight: 700 !important;
+    vertical-align: middle !important;
+}
+
+/* Contenedor interno en fila horizontal centrado */
+.tabla-aprendizaje th.dash-header > div,
+.tabla-profesores th.dash-header > div,
+.tabla-estudiantes th.dash-header > div,
+.tabla-impacto th.dash-header > div,
+.tabla-investigacion th.dash-header > div,
+.tabla-siac th.dash-header > div,
+.tabla-sostenibilidad th.dash-header > div,
+.tabla-aprendizaje th.dash-header .dash-header-cell,
+.tabla-profesores th.dash-header .dash-header-cell,
+.tabla-estudiantes th.dash-header .dash-header-cell,
+.tabla-impacto th.dash-header .dash-header-cell,
+.tabla-investigacion th.dash-header .dash-header-cell,
+.tabla-siac th.dash-header .dash-header-cell,
+.tabla-sostenibilidad th.dash-header .dash-header-cell {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+}
+
+/* Evitar que th genere icono arriba */
+.tabla-aprendizaje th.dash-header::before,
+.tabla-profesores th.dash-header::before,
+.tabla-estudiantes th.dash-header::before,
+.tabla-impacto th.dash-header::before,
+.tabla-investigacion th.dash-header::before,
+.tabla-siac th.dash-header::before,
+.tabla-sostenibilidad th.dash-header::before {
+    display: none !important;
+}
+
+/* Iconos para cada columna ubicados a la izquierda del texto */
+.tabla-aprendizaje th[data-dash-column="nombre_indicador"] > div::before,
+.tabla-profesores th[data-dash-column="nombre_indicador"] > div::before,
+.tabla-estudiantes th[data-dash-column="nombre_indicador"] > div::before,
+.tabla-impacto th[data-dash-column="nombre_indicador"] > div::before,
+.tabla-investigacion th[data-dash-column="nombre_indicador"] > div::before,
+.tabla-siac th[data-dash-column="nombre_indicador"] > div::before,
+.tabla-sostenibilidad th[data-dash-column="nombre_indicador"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/indicador.png"); /* <- Ruta del icono a la izquierda */
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+.tabla-aprendizaje th[data-dash-column="año-2024"] > div::before,
+.tabla-profesores th[data-dash-column="año-2024"] > div::before,
+.tabla-estudiantes th[data-dash-column="año-2024"] > div::before,
+.tabla-impacto th[data-dash-column="año-2024"] > div::before,
+.tabla-investigacion th[data-dash-column="año-2024"] > div::before,
+.tabla-siac th[data-dash-column="año-2024"] > div::before,
+.tabla-sostenibilidad th[data-dash-column="año-2024"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/calendario.png"); /* <- Ruta del icono a la izquierda */
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+.tabla-aprendizaje th[data-dash-column="año-2025"] > div::before,
+.tabla-profesores th[data-dash-column="año-2025"] > div::before,
+.tabla-estudiantes th[data-dash-column="año-2025"] > div::before,
+.tabla-impacto th[data-dash-column="año-2025"] > div::before,
+.tabla-investigacion th[data-dash-column="año-2025"] > div::before,
+.tabla-siac th[data-dash-column="año-2025"] > div::before,
+.tabla-sostenibilidad th[data-dash-column="año-2025"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/calendario.png"); /* <- Ruta del icono a la izquierda */
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+.tabla-aprendizaje th[data-dash-column="año-2026"] > div::before,
+.tabla-profesores th[data-dash-column="año-2026"] > div::before,
+.tabla-estudiantes th[data-dash-column="año-2026"] > div::before,
+.tabla-impacto th[data-dash-column="año-2026"] > div::before,
+.tabla-investigacion th[data-dash-column="año-2026"] > div::before,
+.tabla-siac th[data-dash-column="año-2026"] > div::before,
+.tabla-sostenibilidad th[data-dash-column="año-2026"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/calendario.png"); /* <- Ruta del icono a la izquierda */
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+.tabla-aprendizaje th[data-dash-column="variacion-ultimos_dos"] > div::before,
+.tabla-profesores th[data-dash-column="variacion-ultimos_dos"] > div::before,
+.tabla-estudiantes th[data-dash-column="variacion-ultimos_dos"] > div::before,
+.tabla-impacto th[data-dash-column="variacion-ultimos_dos"] > div::before,
+.tabla-investigacion th[data-dash-column="variacion-ultimos_dos"] > div::before,
+.tabla-siac th[data-dash-column="variacion-ultimos_dos"] > div::before,
+.tabla-sostenibilidad th[data-dash-column="variacion-ultimos_dos"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/variacion.png"); /* <- Ruta del icono a la izquierda */
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+.tabla-aprendizaje th[data-dash-column="porcentaje_variacion"] > div::before,
+.tabla-profesores th[data-dash-column="porcentaje_variacion"] > div::before,
+.tabla-estudiantes th[data-dash-column="porcentaje_variacion"] > div::before,
+.tabla-impacto th[data-dash-column="porcentaje_variacion"] > div::before,
+.tabla-investigacion th[data-dash-column="porcentaje_variacion"] > div::before,
+.tabla-siac th[data-dash-column="porcentaje_variacion"] > div::before,
+.tabla-sostenibilidad th[data-dash-column="porcentaje_variacion"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/porcentaje.png"); /* <- Ruta del icono a la izquierda */
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+.tabla-aprendizaje .dash-cell,
+.tabla-profesores .dash-cell,
+.tabla-estudiantes .dash-cell,
+.tabla-impacto .dash-cell,
+.tabla-investigacion .dash-cell,
+.tabla-siac .dash-cell,
+.tabla-sostenibilidad .dash-cell {
     font-family: Arial, sans-serif;
     font-size: 13px;
 }
 
-.tabla-aprendizaje .dash-cell:hover {
+.tabla-aprendizaje .dash-cell:hover,
+.tabla-profesores .dash-cell:hover,
+.tabla-estudiantes .dash-cell:hover,
+.tabla-impacto .dash-cell:hover,
+.tabla-investigacion .dash-cell:hover,
+.tabla-siac .dash-cell:hover,
+.tabla-sostenibilidad .dash-cell:hover {
     background-color: #f4f7fb !important;
 }
 
@@ -77,24 +283,48 @@
    ========================================================= */
 
 #contenido-seccion::-webkit-scrollbar,
-.tabla-aprendizaje .dash-spreadsheet-container::-webkit-scrollbar {
+.tabla-aprendizaje .dash-spreadsheet-container::-webkit-scrollbar,
+.tabla-profesores .dash-spreadsheet-container::-webkit-scrollbar,
+.tabla-estudiantes .dash-spreadsheet-container::-webkit-scrollbar,
+.tabla-impacto .dash-spreadsheet-container::-webkit-scrollbar,
+.tabla-investigacion .dash-spreadsheet-container::-webkit-scrollbar,
+.tabla-siac .dash-spreadsheet-container::-webkit-scrollbar,
+.tabla-sostenibilidad .dash-spreadsheet-container::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 
 #contenido-seccion::-webkit-scrollbar-track,
-.tabla-aprendizaje .dash-spreadsheet-container::-webkit-scrollbar-track {
+.tabla-aprendizaje .dash-spreadsheet-container::-webkit-scrollbar-track,
+.tabla-profesores .dash-spreadsheet-container::-webkit-scrollbar-track,
+.tabla-estudiantes .dash-spreadsheet-container::-webkit-scrollbar-track,
+.tabla-impacto .dash-spreadsheet-container::-webkit-scrollbar-track,
+.tabla-investigacion .dash-spreadsheet-container::-webkit-scrollbar-track,
+.tabla-siac .dash-spreadsheet-container::-webkit-scrollbar-track,
+.tabla-sostenibilidad .dash-spreadsheet-container::-webkit-scrollbar-track {
     background: #f1f4f8;
     border-radius: 4px;
 }
 
 #contenido-seccion::-webkit-scrollbar-thumb,
-.tabla-aprendizaje .dash-spreadsheet-container::-webkit-scrollbar-thumb {
+.tabla-aprendizaje .dash-spreadsheet-container::-webkit-scrollbar-thumb,
+.tabla-profesores .dash-spreadsheet-container::-webkit-scrollbar-thumb,
+.tabla-estudiantes .dash-spreadsheet-container::-webkit-scrollbar-thumb,
+.tabla-impacto .dash-spreadsheet-container::-webkit-scrollbar-thumb,
+.tabla-investigacion .dash-spreadsheet-container::-webkit-scrollbar-thumb,
+.tabla-siac .dash-spreadsheet-container::-webkit-scrollbar-thumb,
+.tabla-sostenibilidad .dash-spreadsheet-container::-webkit-scrollbar-thumb {
     background: #c2c9d6;
     border-radius: 4px;
 }
 
 #contenido-seccion::-webkit-scrollbar-thumb:hover,
-.tabla-aprendizaje .dash-spreadsheet-container::-webkit-scrollbar-thumb:hover {
+.tabla-aprendizaje .dash-spreadsheet-container::-webkit-scrollbar-thumb:hover,
+.tabla-profesores .dash-spreadsheet-container::-webkit-scrollbar-thumb:hover,
+.tabla-estudiantes .dash-spreadsheet-container::-webkit-scrollbar-thumb:hover,
+.tabla-impacto .dash-spreadsheet-container::-webkit-scrollbar-thumb:hover,
+.tabla-investigacion .dash-spreadsheet-container::-webkit-scrollbar-thumb:hover,
+.tabla-siac .dash-spreadsheet-container::-webkit-scrollbar-thumb:hover,
+.tabla-sostenibilidad .dash-spreadsheet-container::-webkit-scrollbar-thumb:hover {
     background: var(--primary);
 }

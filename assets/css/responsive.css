@@ -35,19 +35,22 @@
        ---------------------------------------------------------------------- */
 
     .header {
-        padding: 0 25px;
+        padding: 0 20px;
+        height: 52px;
     }
 
     .logo {
-        width: 240px;
+        height: 32px;
+        width: auto;
+        max-width: 150px;
     }
 
     .titulo h1 {
-        font-size: 26px;
+        font-size: 16px;
     }
 
     .titulo span {
-        font-size: 13px;
+        font-size: 10px;
     }
 }
 
