@@ -13,8 +13,9 @@ def registrar_callback_estudiantes(app):
         Input("filtro-nivel", "value"),
         Input("filtro-modalidad", "value"),
         Input("filtro-tipo", "value"),
+        Input("filtro-tiempo-reporte", "value"),
     )
-    def datos_tabla(año, centro, periodo, nivel, modalidad, tipo):
+    def datos_tabla(año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte):
 
         # --------------------------------------------------------------------------
         # 1. Copiar datos
@@ -48,6 +49,11 @@ def registrar_callback_estudiantes(app):
         if tipo != "Todos":
             datos_filtrados = datos_filtrados[
                 datos_filtrados["tipo de indicador"] == tipo
+            ]
+
+        if tiempo_reporte is not None and tiempo_reporte != "Todos":
+            datos_filtrados = datos_filtrados[
+                datos_filtrados["tiempo de reporte"].astype(str) == str(tiempo_reporte)
             ]
 
         # --------------------------------------------------------------------------

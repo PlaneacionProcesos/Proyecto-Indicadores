@@ -225,12 +225,11 @@
 
 .contenedor-filtros {
     position: relative;
-
     flex-shrink: 0;
-
     width: 300px;
-
     transition: width .3s ease;
+    overflow: visible;
+    z-index: 100;
 }
 
 
@@ -253,16 +252,11 @@
    ========================================================================== */
 
 .segmentadores.oculto {
-
     width: 0;
-
     padding-left: 0;
     padding-right: 0;
-
     opacity: 0;
-
     overflow: hidden;
-
     border-right: none;
 }
 
@@ -281,74 +275,55 @@
    ========================================================================== */
 
 .btn-toggle-filtros {
-
     position: absolute;
-
-    top: 20px;
-    right: -16px;
-
+    top: 24px;
+    right: -36px;
     z-index: 100;
-
-    width: 32px;
-    height: 42px;
-
+    width: 36px;
+    height: 52px;
     padding: 0;
-
-    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--primary);
     border-left: none;
-
-    border-radius: 0 7px 7px 0;
-
-    background: white;
-
-    color: var(--primary);
-
-    font-size: 15px;
+    border-radius: 0 10px 10px 0;
+    background: var(--primary);
+    color: #ffffff;
+    font-size: 18px;
     font-weight: 700;
-
     cursor: pointer;
-
-    box-shadow:
-        3px 3px 10px rgba(0, 0, 0, .12);
-
-    transition:
-        background .2s ease,
-        color .2s ease,
-        transform .2s ease;
+    box-shadow: 4px 4px 16px rgba(0, 46, 109, .30);
+    transition: all .25s ease;
 }
-
 
 .btn-toggle-filtros:hover {
-
-    background: var(--primary);
-
-    color: white;
-
-    transform: translateX(2px);
+    background: var(--primary-light);
+    border-color: var(--primary-light);
+    color: #ffffff;
+    transform: scale(1.08) translateX(2px);
+    box-shadow: 5px 6px 20px rgba(0, 46, 109, .40);
 }
 
+.btn-toggle-filtros:active {
+    transform: scale(1.02) translateX(0);
+}
 
 /* ==========================================================================
    BOTÓN CUANDO LOS FILTROS ESTÁN OCULTOS
    ========================================================================== */
 
-.segmentadores.oculto + .btn-toggle-filtros {
-
-    position: fixed;
-
-    left: 0;
-
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    border-left: 1px solid var(--border);
-
-    border-radius: 0 7px 7px 0;
+.contenedor-filtros:has(.segmentadores.oculto) .btn-toggle-filtros {
+    right: -36px;
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 4px 4px 16px rgba(0, 46, 109, .35);
 }
 
-
-.segmentadores.oculto + .btn-toggle-filtros:hover {
-
-    transform: translate(2px, -50%);
+.contenedor-filtros:has(.segmentadores.oculto) .btn-toggle-filtros:hover {
+    background: var(--green);
+    border-color: var(--green);
+    transform: scale(1.1) translateX(3px);
+    box-shadow: 5px 6px 20px rgba(123, 181, 55, .45);
 }

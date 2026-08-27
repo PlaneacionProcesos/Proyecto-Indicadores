@@ -89,6 +89,24 @@ opciones_tipos = [
     )
 ]
 
+
+# ------------------------------------------------------------------------------
+# Tiempo de Reporte
+# ------------------------------------------------------------------------------
+
+opciones_tiempos_reporte = [
+    {
+        "label": str(tiempo),
+        "value": str(tiempo),
+    }
+    for tiempo in sorted(
+        resultados_completos["tiempo de reporte"]
+        .dropna()
+        .astype(str)
+        .unique()
+    )
+]
+
 def layout_filtros():
 
     return html.Div(
@@ -277,6 +295,32 @@ def layout_filtros():
 
                         value="Todos",
                         clearable=False,
+                    ),
+
+                    html.Br(),
+
+                    # ------------------------------------------------------------------
+                    # TIEMPO DE REPORTE
+                    # ------------------------------------------------------------------
+
+                    html.Label(
+                        "Tiempo de Reporte"
+                    ),
+
+                    dcc.Dropdown(
+                        id="filtro-tiempo-reporte",
+
+                        options=[
+                            {
+                                "label": "Todos",
+                                "value": "Todos",
+                            },
+                            *opciones_tiempos_reporte,
+                        ],
+
+                        value="Todos",
+                        clearable=False,
+                        searchable=True,
                     ),
 
                     html.Br(),

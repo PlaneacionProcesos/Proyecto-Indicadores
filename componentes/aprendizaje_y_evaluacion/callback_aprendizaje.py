@@ -13,8 +13,9 @@ def registrar_callback_aprendizaje(app):
         Input("filtro-nivel", "value"),
         Input("filtro-modalidad", "value"),
         Input("filtro-tipo", "value"),
+        Input("filtro-tiempo-reporte", "value"),
     )
-    def datos_tabla(año, centro, periodo, nivel, modalidad, tipo):
+    def datos_tabla(año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte):
 
         # --------------------------------------------------------------------------
         # 1. Copiar datos
@@ -50,6 +51,11 @@ def registrar_callback_aprendizaje(app):
                 datos_filtrados["tipo de indicador"] == tipo
             ]
 
+        if tiempo_reporte is not None and tiempo_reporte != "Todos":
+            datos_filtrados = datos_filtrados[
+                datos_filtrados["tiempo de reporte"].astype(str) == str(tiempo_reporte)
+            ]
+
         # --------------------------------------------------------------------------
         # 3. Procesar datos para la tabla
         # --------------------------------------------------------------------------
@@ -73,7 +79,7 @@ def registrar_callback_aprendizaje(app):
             ]
 
             # Indicadores únicos del agrupador
-            indicadores = datos_ae["numero_ind"].drop_duplicates()
+            indicadores = datos_ae["nombre indicador"]
 
             # Crear una fila por indicador
             df_resultado = pd.DataFrame({

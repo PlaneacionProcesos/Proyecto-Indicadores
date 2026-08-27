@@ -18,6 +18,7 @@ def registrar_callbacks_resumen(app):
         Output("filtro-nivel", "value"),
         Output("filtro-modalidad", "value"),
         Output("filtro-tipo", "value"),
+        Output("filtro-tiempo-reporte", "value"),
         Input("btn-borrar-filtros", "n_clicks"),
         prevent_initial_call=True,
     )
@@ -30,6 +31,7 @@ def registrar_callbacks_resumen(app):
             "Todos",  # Nivel
             "Todos",  # Modalidad
             "Todos",  # Tipo
+            "Todos",  # Tiempo de Reporte
         )
 
     @app.callback(
@@ -43,6 +45,7 @@ def registrar_callbacks_resumen(app):
         Input("filtro-nivel", "value"),
         Input("filtro-modalidad", "value"),
         Input("filtro-tipo", "value"),
+        Input("filtro-tiempo-reporte", "value"),
     )
     def actualizar_kpis(
         año,
@@ -51,6 +54,7 @@ def registrar_callbacks_resumen(app):
         nivel,
         modalidad,
         tipo,
+        tiempo_reporte,
     ):
         # --------------------------------------------------------------------------
         # Validar filtro
@@ -126,6 +130,16 @@ def registrar_callbacks_resumen(app):
                 datos_filtrados["tipo de indicador"] == tipo
             ]
 
+        # --------------------------------------------------------------------------
+        # FILTRO TIEMPO DE REPORTE
+        # --------------------------------------------------------------------------
+
+        if tiempo_reporte is not None and tiempo_reporte != "Todos":
+
+            datos_filtrados = datos_filtrados[
+                datos_filtrados["tiempo de reporte"].astype(str) == str(tiempo_reporte)
+            ]
+
         # ==========================================================================
         # KPIs
         # ==========================================================================
@@ -186,6 +200,7 @@ def registrar_callbacks_resumen(app):
         Input("filtro-nivel", "value"),
         Input("filtro-modalidad", "value"),
         Input("filtro-tipo", "value"),
+        Input("filtro-tiempo-reporte", "value"),
     )
     def actualizar_graficas(
         año,
@@ -194,6 +209,7 @@ def registrar_callbacks_resumen(app):
         nivel,
         modalidad,
         tipo,
+        tiempo_reporte,
     ):
         # --------------------------------------------------------------------------
         # Copiar datos
@@ -255,6 +271,16 @@ def registrar_callbacks_resumen(app):
 
             datos_filtrados = datos_filtrados[
                 datos_filtrados["tipo de indicador"] == tipo
+            ]
+
+        # --------------------------------------------------------------------------
+        # FILTRO TIEMPO DE REPORTE
+        # --------------------------------------------------------------------------
+
+        if tiempo_reporte is not None and tiempo_reporte != "Todos":
+
+            datos_filtrados = datos_filtrados[
+                datos_filtrados["tiempo de reporte"].astype(str) == str(tiempo_reporte)
             ]
 
         # ==========================================================================
