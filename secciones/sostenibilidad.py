@@ -13,7 +13,7 @@ def layout_sostenibilidad():
                 className="tabla-sostenibilidad",
                 children=[
                     html.H3(
-                            "Indicadores - Años (2024-2026)",
+                            "Indicadores - Sostenibilidad",
                             className="titulo-tabla",
                         ),
                     html.Div(

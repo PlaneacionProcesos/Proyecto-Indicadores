@@ -17,7 +17,7 @@ def layout_header():
                 children=[
 
                     html.H1(
-                        "Uniminuto Sede Bogotá"
+                        "UNIMINUTO Sede Bogotá"
                     ),
 
                     html.Span(

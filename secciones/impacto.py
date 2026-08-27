@@ -7,13 +7,13 @@ def layout_impacto():
         className="contenedor-impacto",
         children=[
             # ==================================================================
-            # Tabla de indicadores de la seccion
+            # Tabla de indicadores de la sección
             # ==================================================================
             html.Div(
                 className="tabla-impacto",
                 children=[
                     html.H3(
-                            "Indicadores - Años (2024-2026)",
+                            "Indicadores - Impacto",
                             className="titulo-tabla",
                         ),
                     html.Div(

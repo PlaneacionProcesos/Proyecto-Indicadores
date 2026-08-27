@@ -13,7 +13,7 @@ def layout_siac():
                 className="tabla-siac",
                 children=[
                     html.H3(
-                            "Indicadores - Años (2024-2026)",
+                            "Indicadores - SIAC",
                             className="titulo-tabla",
                         ),
                     html.Div(

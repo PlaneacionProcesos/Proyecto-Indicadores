@@ -8,7 +8,10 @@ from configuraciones.colors import (
 # ==============================================================================
 # CONFIGURACIÓN DE COLORES DE CABECERA POR COLUMNA
 # ==============================================================================
-# Define aquí el color de fondo y de texto específico para cada columna:
+
+VARIACION = "2025-2026"
+
+
 COLORES_CABECERA = {
     "nombre_indicador": {
         "fondo": "#002060",  
@@ -69,7 +72,7 @@ def tabla_profesores():
                 "id": "año-2026",
             },
             {
-                "name": "Variación",
+                "name": f"Variacion ({VARIACION})",
                 "id": "variacion-ultimos_dos"
             },
             {

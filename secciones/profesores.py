@@ -13,7 +13,7 @@ def layout_profesores():
                 className="tabla-profesores",
                 children=[
                     html.H3(
-                            "Indicadores - Años (2024-2026)",
+                            "Indicadores - Profesores",
                             className="titulo-tabla",
                         ),
                     html.Div(
