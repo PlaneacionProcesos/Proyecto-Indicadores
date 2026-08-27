@@ -9,7 +9,7 @@ def layout_documentos(categoria=None):
             
             # Título secreto: al hacer 3 clics se activa la barra de autenticación
             html.H3(
-                "Documentos de la Sección", 
+                "Documentos de la Sección",
                 id="gestor-titulo-secreto", 
                 n_clicks=0,
                 className="gestor-titulo",

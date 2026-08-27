@@ -253,15 +253,25 @@ def registrar_callbacks_db(app):
                 className="gestor-item",
                 children=[
                     html.Div(
-                        className="gestor-item-info",
+                        className="gestor-item-contenido",
                         children=[
-                            html.Span(doc["nombre"], className="gestor-item-titulo"),
-                            html.Span(
-                                (
-                                    f"Categoría: {nombre_categoria} | "
-                                    f"Fecha: {doc['fecha'].strftime('%Y-%m-%d')}"
-                                ),
-                                className="gestor-item-meta",
+                            html.Img(
+                                src="assets/iconos/pdf_icon.png", 
+                                className="icono-documento-item",
+                                alt="Icono documento",
+                            ),
+                            html.Div(
+                                className="gestor-item-info",
+                                children=[
+                                    html.Span(doc["nombre"], className="gestor-item-titulo"),
+                                    html.Span(
+                                        (
+                                            f"Categoría: {nombre_categoria} | "
+                                            f"Fecha: {doc['fecha'].strftime('%Y-%m-%d')}"
+                                        ),
+                                        className="gestor-item-meta",
+                                    ),
+                                ],
                             ),
                         ],
                     ),

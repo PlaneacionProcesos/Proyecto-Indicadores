@@ -323,6 +323,23 @@ def registrar_callbacks_resumen(app):
         # GRÁFICO DE BARRAS APILADAS - INDICADOR X MARCROPROCESO
         # ==========================================================================
 
+        COLORES_MACROPROCESO = {
+            "Aseguramiento de la Calidad Academica": "#0B3D91",
+            "Bienestar Institucional e Identidad Misional": "#145DA0",
+            "Calidad Integral": "#1E6FBA",
+            "Desarrollo Integral del Talento Humano": "#2878C8",
+            "Direccionamiento Estrategico": "#328CC1",
+            "Docencia": "#3FA7D6",
+            "Gestion Administrativa y Financiera": "#5AA9E6",
+            "Gestion de la Infraestructura Fisica y Tecnologica": "#74B9E8",
+            "Gestion de la Planeacion y Control": "#8CC8ED",
+            "Gestion de Mercadeo y Posicionamiento": "#A7D5F2",
+            "Gestion Juridica": "#C2E2F5",
+            "Investigacion": "#D6ECF8",
+            "Proyeccion Social": "#E8F5FB",
+            "Relaciones Interinstitucionales": "#F5FBFE",
+        }
+
         if datos_filtrados.empty:
 
             grafico_barras = px.bar(title="No hay datos para los filtros seleccionados")
@@ -333,6 +350,7 @@ def registrar_callbacks_resumen(app):
                 datos_filtrados.groupby("macroproceso")["numero_ind"]
                 .nunique()
                 .reset_index(name="cantidad_indicadores")
+                .sort_values("cantidad_indicadores", ascending=False)
             )
 
             grafico_barras = px.bar(
@@ -342,13 +360,24 @@ def registrar_callbacks_resumen(app):
                 orientation="h",
                 title="Indicadores por agrupador",
                 color="macroproceso",
+                color_discrete_map=COLORES_MACROPROCESO,
+                category_orders={"macroproceso": datos_barras["macroproceso"].tolist()},
             )
 
-            # ==========================================================================
+            # ========================================================================
             # ESTILO
-            # ==========================================================================
+            # ========================================================================
 
             grafico_barras.update_layout(
+                title=dict(
+                    x=0.5,
+                    xanchor="center",
+                    font=dict(
+                        family="Arial",
+                        size=18,
+                        color="#080b0d",
+                    ),
+                ),
                 font=dict(
                     family="Arial",
                     color="#080b0d",
@@ -364,9 +393,9 @@ def registrar_callbacks_resumen(app):
                 showlegend=False,
             )
 
-            # ==========================================================================
+            # ========================================================================
             # EJES
-            # ==========================================================================
+            # ========================================================================
 
             grafico_barras.update_xaxes(
                 title=None,
@@ -379,6 +408,7 @@ def registrar_callbacks_resumen(app):
                 title=None,
                 showgrid=False,
                 zeroline=False,
+                autorange="reversed",
             )
 
         # ==========================================================================

@@ -35,15 +35,30 @@
 
 .gestor-titulo {
     margin: 0;
-    padding: 16px 20px 12px;
+    padding: 14px 20px 12px;
     color: white;
     font-size: 18px;
     font-weight: 700;
     border-bottom: 3px solid var(--green);
     flex-shrink: 0;
-    text-align: center;
     background: var(--primary);
     margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.icono-gestor {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+.texto-gestor-titulo {
+    pointer-events: none;
 }
 
 /* =========================================================
@@ -162,6 +177,20 @@
 /* Mismo hover que en las tablas */
 .gestor-item:hover {
     background-color: #f4f7fb;
+}
+
+.gestor-item-contenido {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.icono-documento-item {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 .gestor-item-info {

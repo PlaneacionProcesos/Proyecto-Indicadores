@@ -91,7 +91,7 @@ def layout_resumen():
                                 id="tarjeta4",
                                 children=[
                                     html.Img(
-                                        src="assets/iconos/kpi_construccion.png",  # <- Pon aquí la dirección de la imagen
+                                        src="assets/iconos/kpi_construccion.png",  
                                         className="icono-kpi",
                                         alt="Icono En Construcción",
                                     ),

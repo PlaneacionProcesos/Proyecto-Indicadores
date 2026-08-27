@@ -1,14 +1,16 @@
 from dash import Input, Output, html, ctx
+from componentes.navegacion.navegacion import ICONOS_NAVEGACION
 
 
 def registrar_callbacks_navegacion(app):
 
     # ======================================================================
-    # CONTROLADOR DE BOTONES MENÚ (Actualiza 'seccion-actual')
+    # CONTROLADOR DE BOTONES MENÚ (Actualiza 'seccion-actual', clases e iconos)
     # ======================================================================
         
     @app.callback(
         Output("seccion-actual", "data"),
+        # Clases de botones
         Output("btn-resumen", "className"),
         Output("btn-profesores", "className"),
         Output("btn-aprendizaje-evaluacion", "className"),
@@ -17,6 +19,15 @@ def registrar_callbacks_navegacion(app):
         Output("btn-investigacion", "className"),
         Output("btn-siac", "className"),
         Output("btn-sostenibilidad", "className"),
+        # Iconos de botones (src)
+        Output("icono-resumen", "src"),
+        Output("icono-profesores", "src"),
+        Output("icono-aprendizaje", "src"),
+        Output("icono-estudiantes", "src"),
+        Output("icono-impacto", "src"),
+        Output("icono-investigacion", "src"),
+        Output("icono-siac", "src"),
+        Output("icono-sostenibilidad", "src"),
         Input("btn-resumen", "n_clicks"),
         Input("btn-profesores", "n_clicks"),
         Input("btn-aprendizaje-evaluacion", "n_clicks"),
@@ -54,17 +65,21 @@ def registrar_callbacks_navegacion(app):
             seccion = mapa_secciones.get(ctx.triggered_id, "resumen")
 
         clases = []
+        iconos = []
 
         for boton, nombre_seccion in mapa_secciones.items():
 
             if nombre_seccion == seccion:
                 clases.append("marcador activo")
+                iconos.append(ICONOS_NAVEGACION[nombre_seccion]["activo"])
             else:
                 clases.append("marcador")
+                iconos.append(ICONOS_NAVEGACION[nombre_seccion]["normal"])
 
         return (
             seccion,
             *clases,
+            *iconos,
         )
 
 

@@ -154,17 +154,17 @@
 /*  COLORES INDIVIDUALES PARA CADA KPI    */ 
 #tarjeta1 h2,
 #tarjeta1 p {
-    color: #215F9A;
+    color: #E97132;
 }
 
 #tarjeta2 h2,
 #tarjeta2 p {
-    color: #4E95D9;
+    color: #D86ECC;
 }
 
 #tarjeta3 h2,
 #tarjeta3 p {
-    color: #A6CAEC;
+    color: #4E95D9;
 }
 
 
@@ -185,13 +185,9 @@
     grid-template-columns:
         repeat(2, minmax(0, 1fr));
 
-    grid-auto-rows: minmax(320px, 1fr);
-
-     /* Primera fila */
-    grid-template-rows: 115px;
-
-    /* Filas siguientes */
-    grid-auto-rows: 320px;
+    /* Filas flexibles que se adaptan al contenido */
+    grid-template-rows: auto;
+    grid-auto-rows: auto;
 
     gap: 18px;
 
@@ -219,7 +215,8 @@
 .grafico-4,
 .grafico-5 {
     min-width: 0;
-    min-height: 320px;
+    min-height: 340px;
+    height: 340px;
 
     position: relative;
 
@@ -301,9 +298,9 @@
 
     grid-column: 1 / -1;
 
-    border-radius: 10px;
     min-width: 0;
-    min-height: 320px;
+    height: auto;
+    min-height: fit-content;
 
     background: white;
 
@@ -314,12 +311,13 @@
     box-shadow:
         0 4px 12px rgba(0, 0, 0, .08);
 
-    overflow: hidden;
+    overflow: visible;
 
     display: flex;
     flex-direction: column;
 
     position: relative;
+    margin-bottom: 20px;
 }
 
 
@@ -354,7 +352,7 @@
 
     color: white;
 
-    font-size: 18¿px;
+    font-size: 18px;
     font-weight: 700;
 
     border-bottom: 3px solid var(--green);
@@ -374,12 +372,9 @@
 
 .tabla-contenedor {
 
-    flex: 1;
-
     min-width: 0;
     min-height: 0;
-
-    overflow: hidden;
+    height: auto;
 
     padding: 0 20px 20px;
 
@@ -389,41 +384,91 @@
 
 
 /* =========================================================
-   DATATABLE
+   DATATABLE (SIN SCROLL INTERNO)
    ========================================================= */
 
 .tabla-agrupadores .dash-table-container {
 
     width: 100%;
-
-    height: 100%;
-
-    min-height: 0;
-
-    overflow: hidden;
+    height: auto;
+    max-height: none;
+    overflow: visible;
 }
 
 
 /* =========================================================
-   ÁREA SCROLL DE DATATABLE
+   ÁREA DE DATATABLE
    ========================================================= */
 
-.tabla-agrupadores .dash-spreadsheet-container {
+.tabla-agrupadores .dash-spreadsheet-container,
+.tabla-agrupadores .dash-spreadsheet-inner,
+.tabla-agrupadores table {
 
-    height: 100% !important;
-
-    overflow-y: auto !important;
-    overflow-x: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    overflow-x: visible !important;
 }
 
 
 /* =========================================================
-   ENCABEZADO
+   ENCABEZADO E ICONOS
    ========================================================= */
 
-.tabla-agrupadores .dash-header {
-
+.tabla-agrupadores th.dash-header {
     font-weight: 700 !important;
+    vertical-align: middle !important;
+}
+
+.tabla-agrupadores th.dash-header > div,
+.tabla-agrupadores th.dash-header .dash-header-cell {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    white-space: nowrap !important;
+}
+
+.tabla-agrupadores th.dash-header::before {
+    display: none !important;
+}
+
+.tabla-agrupadores th[data-dash-column="agrupador"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/agrupados_resumen.png");
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+.tabla-agrupadores th[data-dash-column="descripcion"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/descripcion_resumen.png");
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+.tabla-agrupadores th[data-dash-column="total_indicadores"] > div::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("/assets/iconos/num_resumen.png");
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    flex-shrink: 0 !important;
 }
 
 
