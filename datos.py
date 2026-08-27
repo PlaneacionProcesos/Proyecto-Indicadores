@@ -28,8 +28,11 @@ resultados_completos = resultados_completos.merge(
     df_centros, on="centro_universitario_id", how="left"
 )
 
-# Exportar dataset con merges a Excel en la carpeta data
-resultados_completos.to_excel("data/resultados_completos.xlsx", index=False)
+# Exportar dataset con merges a Excel en la carpeta data (protegido para serverless)
+try:
+    resultados_completos.to_excel("data/resultados_completos.xlsx", index=False)
+except Exception:
+    pass
 
 
 def mostrar_tablas():

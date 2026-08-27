@@ -196,8 +196,12 @@ registrar_callback_siac(app)
 registrar_callback_sostenibilidad(app)
 
 # ========================================================================================
-#                                      EJECUCIÓN
+#                                      WSGI / EJECUCIÓN
 # ========================================================================================
 
+server = app.server
+handler = server
+app = server
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    server.run(debug=True)
