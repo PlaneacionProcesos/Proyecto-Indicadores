@@ -7,7 +7,7 @@ from secciones.aprendizaje_evaluacion import layout_aprendizaje
 from componentes.db.vistas_crud import layout_documentos
 from componentes.header import layout_header
 from componentes.navegacion.navegacion import layout_navegacion
-from componentes.filtros import layout_filtros
+from componentes.filtros import layout_filtros, registrar_callbacks_filtros
 from componentes.footer import layout_footer
 from secciones.profesores import layout_profesores
 from secciones.estudiantes import layout_estudiantes
@@ -174,6 +174,8 @@ app.layout = html.Div(
 # ========================================================================================
 
 registrar_callbacks_resumen(app)
+
+registrar_callbacks_filtros(app)
 
 registrar_callbacks_navegacion(app)
 

@@ -13,28 +13,6 @@ def registrar_callbacks_resumen(app):
     # ========================================================================================
     #                                      KPIs
     # ========================================================================================
-    @app.callback(
-        Output("filtro-año", "value"),
-        Output("filtro-centro", "value"),
-        Output("filtro-periodo", "value"),
-        Output("filtro-nivel", "value"),
-        Output("filtro-modalidad", "value"),
-        Output("filtro-tipo", "value"),
-        Output("filtro-tiempo-reporte", "value"),
-        Input("btn-borrar-filtros", "n_clicks"),
-        prevent_initial_call=True,
-    )
-    def borrar_filtros(n_clicks):
-
-        return (
-            "Historico",  # Año
-            "Todos",  # Centro
-            "Todos",  # Periodo
-            "Todos",  # Nivel
-            "Todos",  # Modalidad
-            "Todos",  # Tipo
-            "Todos",  # Tiempo de Reporte
-        )
 
     @app.callback(
         Output("kpi-it", "children"),
