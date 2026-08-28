@@ -3,10 +3,129 @@ from datos import resultados_completos
 import pandas as pd
 
 
+def generar_tarjetas_contexto_profesores(datos_seccion):
+    """
+    Genera tarjetas interactivas de contexto para cada indicador del agrupador.
+    Muestra:
+      - Nombre indicador
+      - Proceso
+      - Macroproceso
+      - Formula de calculo
+    """
+    if datos_seccion.empty:
+        return html.Div(
+            "No se encontraron indicadores disponibles con los filtros seleccionados.",
+            className="sin-indicadores-contexto",
+        )
+
+    indicadores_unicos = datos_seccion["numero_ind"].drop_duplicates()
+    tarjetas = []
+
+    for cod_ind in indicadores_unicos:
+        df_ind = datos_seccion[datos_seccion["numero_ind"] == cod_ind]
+        if df_ind.empty:
+            continue
+        fila = df_ind.iloc[0]
+
+        # 1. Nombre Indicador
+        nombre = fila.get("nombre indicador")
+        nombre_str = (
+            str(nombre).strip()
+            if pd.notna(nombre) and str(nombre).strip() != "" and str(nombre).strip().lower() != "nan"
+            else str(cod_ind)
+        )
+
+        # 2. Proceso
+        proceso = fila.get("proceso")
+        proceso_str = (
+            str(proceso).strip()
+            if pd.notna(proceso) and str(proceso).strip() != "" and str(proceso).strip().lower() != "nan"
+            else "No especificado"
+        )
+
+        # 3. Macroproceso
+        macroproceso = fila.get("macroproceso")
+        macro_str = (
+            str(macroproceso).strip()
+            if pd.notna(macroproceso) and str(macroproceso).strip() != "" and str(macroproceso).strip().lower() != "nan"
+            else "No especificado"
+        )
+
+        # 4. Formula de Calculo
+        formula = fila.get("formula de calculo")
+        formula_str = (
+            str(formula).strip()
+            if pd.notna(formula) and str(formula).strip() != "" and str(formula).strip().lower() != "nan"
+            else "Registro directo / No especificada"
+        )
+
+        tarjeta = html.Details(
+            className="tarjeta-indicador-contexto",
+            children=[
+                html.Summary(
+                    className="tarjeta-summary",
+                    children=[
+                        html.Div(
+                            className="tarjeta-summary-izq",
+                            children=[
+                                html.Span(str(cod_ind), className="badge-codigo-indicador"),
+                                html.Span(nombre_str, className="nombre-resumen-indicador"),
+                            ],
+                        ),
+                        html.Span(
+                            className="btn-ver-detalle-tag",
+                            children=[
+                                html.Span("Ver detalles", className="texto-btn-detalle"),
+                                html.Span(" ▾", className="flecha-btn-detalle"),
+                            ],
+                        ),
+                    ],
+                ),
+                html.Div(
+                    className="tarjeta-cuerpo-detalle",
+                    children=[
+                        html.Div(
+                            className="item-detalle-contexto",
+                            children=[
+                                html.Span("Nombre Indicador", className="label-detalle-contexto"),
+                                html.Span(nombre_str, className="valor-detalle-contexto valor-nombre"),
+                            ],
+                        ),
+                        html.Div(
+                            className="item-detalle-contexto",
+                            children=[
+                                html.Span("Proceso", className="label-detalle-contexto"),
+                                html.Span(proceso_str, className="valor-detalle-contexto"),
+                            ],
+                        ),
+                        html.Div(
+                            className="item-detalle-contexto",
+                            children=[
+                                html.Span("Macroproceso", className="label-detalle-contexto"),
+                                html.Span(macro_str, className="valor-detalle-contexto"),
+                            ],
+                        ),
+                        html.Div(
+                            className="item-detalle-contexto item-formula",
+                            children=[
+                                html.Span("Fórmula de Cálculo", className="label-detalle-contexto"),
+                                html.Div(formula_str, className="valor-detalle-contexto valor-formula"),
+                            ],
+                        ),
+                    ],
+                ),
+            ],
+        )
+        tarjetas.append(tarjeta)
+
+    return tarjetas
+
+
 def registrar_callback_profersores(app):
 
     @app.callback(
         Output("tabla-profesores", "data"),
+        Output("tarjetas-contexto-profesores", "children"),
         Input("filtro-año", "value"),
         Input("filtro-centro", "value"),
         Input("filtro-periodo", "value"),
@@ -61,7 +180,7 @@ def registrar_callback_profersores(app):
                 ]
 
         # --------------------------------------------------------------------------
-        # 3. Procesar datos para la tabla
+        # 3. Procesar datos para la tabla y tarjetas
         # --------------------------------------------------------------------------
         if datos_ae.empty:
             df_resultado = pd.DataFrame(
@@ -74,7 +193,7 @@ def registrar_callback_profersores(app):
                     "porcentaje_variacion",
                 ]
             )
-            return df_resultado.to_dict("records")
+            return df_resultado.to_dict("records"), generar_tarjetas_contexto_profesores(datos_ae)
 
         # Indicadores únicos del agrupador
         indicadores = datos_ae["numero_ind"].drop_duplicates()
@@ -153,4 +272,6 @@ def registrar_callback_profersores(app):
             for a, b in zip(val_2026, val_2025)
         ]
 
-        return df_resultado.to_dict("records")
+        tarjetas_ui = generar_tarjetas_contexto_profesores(datos_ae)
+
+        return df_resultado.to_dict("records"), tarjetas_ui

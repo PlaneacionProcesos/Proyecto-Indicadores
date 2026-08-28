@@ -6,16 +6,16 @@ DESCRIPCIONES_AGRUPADORES = {
     "Profesores":
         "Indicadores relacionados con la gestión y desempeño del cuerpo profesoral.",
 
-    "Aprendizaje y Evaluación":
+    "Aprendizaje y Evaluacion":
         "Indicadores relacionados con los procesos de enseñanza, aprendizaje y evaluación.",
 
     "Impacto":
         "Indicadores relacionados con el impacto institucional.",
 
-    "Investigación":
+    "Investigacion":
         "Indicadores relacionados con investigación y generación de conocimiento.",
 
-    "SIAC":
+    "SIAC - Rendicion de Cuentas":
         "Indicadores relacionados con el Sistema Interno de Aseguramiento de la Calidad.",
 
     "Sostenibilidad":

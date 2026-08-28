@@ -415,7 +415,7 @@ def registrar_callbacks_resumen(app):
                 x="cantidad_indicadores",
                 y="macroproceso",
                 orientation="h",
-                title="Indicadores por agrupador",
+                title="Indicadores por macroproceso",
                 color="macroproceso",
                 color_discrete_map=COLORES_MACROPROCESO,
                 category_orders={"macroproceso": datos_barras["macroproceso"].tolist()},
