@@ -1,5 +1,6 @@
 from dash import dcc, html
 from componentes.aprendizaje_y_evaluacion.tabla_aprendizaje import tabla_aprendizaje
+from componentes.modal_contexto import banner_ayuda_tabla, layout_modal_contexto
 
 
 def layout_aprendizaje():
@@ -7,6 +8,11 @@ def layout_aprendizaje():
     return html.Div(
         className="contenedor-aprendizaje",
         children=[
+            # ==================================================================
+            # Modal de Contexto y Ficha Técnica
+            # ==================================================================
+            layout_modal_contexto("aprendizaje"),
+
             # ==================================================================
             # Tabla de indicadores de la seccion
             # ==================================================================
@@ -17,6 +23,7 @@ def layout_aprendizaje():
                         "Indicadores - Aprendizaje y Evaluación",
                         className="titulo-tabla",
                     ),
+                    banner_ayuda_tabla(),
                     html.Div(
                         className="tabla-contenedor",
                         children=[tabla_aprendizaje()],
@@ -37,7 +44,7 @@ def layout_aprendizaje():
                                 className="titulo-contexto",
                             ),
                             html.P(
-                                "Haz clic en 'Ver detalles' en cualquier tarjeta para desplegar el macroproceso, proceso y fórmula de cálculo correspondiente.",
+                                "Consulta el macroproceso, proceso y fórmula de cálculo de cada indicador. Al hacer clic en una fila de la tabla, su tarjeta se resaltará automáticamente.",
                                 className="subtitulo-contexto",
                             ),
                         ],
@@ -50,3 +57,4 @@ def layout_aprendizaje():
             ),
         ],
     )
+

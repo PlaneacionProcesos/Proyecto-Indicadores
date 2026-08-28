@@ -94,7 +94,48 @@ def tabla_profesores():
             "whiteSpace": "normal",
             "height": "auto",
             "cursor": "pointer",
+            "overflow": "hidden",
+            "textOverflow": "ellipsis",
         },
+        style_cell_conditional=[
+            {
+                "if": {"column_id": "nombre_indicador"},
+                "width": "45%",
+                "minWidth": "240px",
+                "textAlign": "left",
+                "fontWeight": "600",
+            },
+            {
+                "if": {"column_id": "año-2024"},
+                "width": "11%",
+                "minWidth": "80px",
+                "textAlign": "center",
+            },
+            {
+                "if": {"column_id": "año-2025"},
+                "width": "11%",
+                "minWidth": "80px",
+                "textAlign": "center",
+            },
+            {
+                "if": {"column_id": "año-2026"},
+                "width": "11%",
+                "minWidth": "80px",
+                "textAlign": "center",
+            },
+            {
+                "if": {"column_id": "variacion-ultimos_dos"},
+                "width": "11%",
+                "minWidth": "90px",
+                "textAlign": "center",
+            },
+            {
+                "if": {"column_id": "porcentaje_variacion"},
+                "width": "11%",
+                "minWidth": "80px",
+                "textAlign": "center",
+            },
+        ],
         style_header={
             "fontWeight": "bold",
             "fontSize": "13px",

@@ -1,11 +1,18 @@
 from dash import dcc, html
 from componentes.profesores.tabla_profesores import tabla_profesores
+from componentes.modal_contexto import banner_ayuda_tabla, layout_modal_contexto
+
 
 def layout_profesores():
 
     return html.Div(
         className="contenedor-profesores",
         children=[
+            # ==================================================================
+            # Modal de Contexto y Ficha Técnica
+            # ==================================================================
+            layout_modal_contexto("profesores"),
+
             # ==================================================================
             # Tabla de indicadores de la seccion
             # ==================================================================
@@ -16,6 +23,7 @@ def layout_profesores():
                         "Indicadores - Profesores",
                         className="titulo-tabla",
                     ),
+                    banner_ayuda_tabla(),
                     html.Div(
                         className="tabla-contenedor",
                         children=[tabla_profesores()],
@@ -36,7 +44,7 @@ def layout_profesores():
                                 className="titulo-contexto",
                             ),
                             html.P(
-                                "Haz clic en 'Ver detalles' en cualquier tarjeta para desplegar el macroproceso, proceso y fórmula de cálculo correspondiente.",
+                                "Consulta el macroproceso, proceso y fórmula de cálculo de cada indicador. Al hacer clic en una fila de la tabla, su tarjeta se resaltará automáticamente.",
                                 className="subtitulo-contexto",
                             ),
                         ],

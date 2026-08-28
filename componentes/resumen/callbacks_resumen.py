@@ -7,7 +7,6 @@ import plotly.express as px
 import matplotlib.colors as mcolors
 
 
-
 def registrar_callbacks_resumen(app):
 
     # ========================================================================================
@@ -267,24 +266,19 @@ def registrar_callbacks_resumen(app):
         # GRÁFICO PASTEL
         # ==========================================================================
 
-
-        # ========================================================================== 
+        # ==========================================================================
         # GRÁFICO PASTEL
         # ==========================================================================
 
         if datos_filtrados.empty:
 
-            grafico_pastel = px.pie(
-                title="No hay datos para los filtros seleccionados"
-            )
+            grafico_pastel = px.pie(title="No hay datos para los filtros seleccionados")
 
         else:
 
-            datos_pastel = datos_filtrados.groupby(
-                "modalidad",
-                as_index=False
-            )["resultado"].sum()
-
+            datos_pastel = datos_filtrados.groupby("modalidad", as_index=False)[
+                "resultado"
+            ].sum()
 
         colores_modalidad = {
             "Presencial": "#053074",
@@ -292,7 +286,6 @@ def registrar_callbacks_resumen(app):
             "Distancia": "#FED103",
             "No Aplica": "#AEAEAE",
         }
-
 
         grafico_pastel = px.pie(
             datos_pastel,
@@ -302,7 +295,6 @@ def registrar_callbacks_resumen(app):
             color="modalidad",
             color_discrete_map=colores_modalidad,
         )
-
 
         # --------------------------------------------------------------------------
         # COLOR DE LAS ETIQUETAS SEGÚN EL COLOR DEL SEGMENTO
@@ -318,11 +310,7 @@ def registrar_callbacks_resumen(app):
             rgb = mcolors.to_rgb(color)
 
             # Calcular luminosidad relativa aproximada
-            luminosidad = (
-                0.299 * rgb[0]
-                + 0.587 * rgb[1]
-                + 0.114 * rgb[2]
-            )
+            luminosidad = 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]
 
             # Fondo oscuro → texto blanco
             # Fondo claro → texto negro
@@ -331,7 +319,6 @@ def registrar_callbacks_resumen(app):
             else:
                 colores_texto.append("black")
 
-
         grafico_pastel.update_traces(
             textposition="inside",
             textfont=dict(
@@ -339,13 +326,11 @@ def registrar_callbacks_resumen(app):
             ),
         )
 
-
         # --------------------------------------------------------------------------
         # APLICAR COLOR INDIVIDUAL A CADA ETIQUETA
         # --------------------------------------------------------------------------
 
         grafico_pastel.data[0].textfont.color = colores_texto
-
 
         # --------------------------------------------------------------------------
         # CONFIGURACIÓN DEL GRÁFICO
@@ -381,20 +366,20 @@ def registrar_callbacks_resumen(app):
         # ==========================================================================
 
         COLORES_MACROPROCESO = {
-            "Aseguramiento de la Calidad Academica": "#0B3D91",
-            "Bienestar Institucional e Identidad Misional": "#145DA0",
-            "Calidad Integral": "#1E6FBA",
-            "Desarrollo Integral del Talento Humano": "#2878C8",
-            "Direccionamiento Estrategico": "#328CC1",
-            "Docencia": "#3FA7D6",
-            "Gestion Administrativa y Financiera": "#5AA9E6",
-            "Gestion de la Infraestructura Fisica y Tecnologica": "#74B9E8",
-            "Gestion de la Planeacion y Control": "#8CC8ED",
-            "Gestion de Mercadeo y Posicionamiento": "#A7D5F2",
-            "Gestion Juridica": "#C2E2F5",
-            "Investigacion": "#D6ECF8",
-            "Proyeccion Social": "#E8F5FB",
-            "Relaciones Interinstitucionales": "#F5FBFE",
+            "Investigacion": "#0B3D91",
+            "Proyeccion Social": "#145DA0",
+            "Desarrollo Integral del Talento Humano": "#1E6FBA",
+            "Gestion Administrativa y Financiera": "#2878C8",
+            "Docencia": "#328CC1",
+            "Relaciones Interinstitucionales": "#3FA7D6",
+            "Bienestar Institucional e Identidad Misional": "#5AA9E6",
+            "Calidad Integral": "#74B9E8",
+            "Aseguramiento de la Calidad Academica": "#8CC8ED",
+            "Direccionamiento Estrategico": "#A7D5F2",
+            "Gestion de Mercadeo y Posicionamiento": "#C2E2F5",
+            "Gestion de la Planeacion y Control": "#D6ECF8",
+            "Gestion de la Infraestructura Fisica y Tecnologica": "#E8F5FB",
+            "Gestion Juridica": "#F5FBFE",
         }
 
         if datos_filtrados.empty:

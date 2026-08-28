@@ -2,13 +2,14 @@ import dash
 from dash import Input, Output, State, ctx, html, no_update
 from datos import resultados_completos
 import pandas as pd
+from componentes.modal_contexto import generar_cuerpo_modal, generar_tarjeta_contexto_abierta
 
 
 def generar_tarjetas_contexto_aprendizaje(datos_seccion, indicador_seleccionado=None):
     """
-    Genera tarjetas interactivas de contexto para cada indicador del agrupador.
-    Si un indicador fue clickeado en la tabla (indicador_seleccionado),
-    su tarjeta se colorea/resalta y se abre automáticamente.
+    Genera tarjetas de contexto abiertas y activas por defecto para cada indicador.
+    Muestra directamente el macroproceso, proceso y fórmula. Al seleccionar un indicador,
+    su tarjeta se enfoca/resalta visualmente.
     """
     if datos_seccion.empty:
         return html.Div(
@@ -16,24 +17,25 @@ def generar_tarjetas_contexto_aprendizaje(datos_seccion, indicador_seleccionado=
             className="sin-indicadores-contexto",
         )
 
-    pares_indicadores = datos_seccion[["numero_ind", "nombre indicador"]].drop_duplicates()
+    nombres_indicadores = datos_seccion["nombre indicador"].dropna().unique()
     tarjetas = []
 
-    for _, par in pares_indicadores.iterrows():
-        cod_ind = par["numero_ind"]
-        nombre = par["nombre indicador"]
-
-        df_ind = datos_seccion[datos_seccion["numero_ind"] == cod_ind]
-        if df_ind.empty:
-            continue
-        fila = df_ind.iloc[0]
+    for nombre in nombres_indicadores:
+        # Metadatos garantizados desde el catálogo general
+        df_meta = resultados_completos[
+            (resultados_completos["agrupador"] == "Aprendizaje y Evaluacion") &
+            (resultados_completos["nombre indicador"] == nombre)
+        ]
+        if not df_meta.empty:
+            fila = df_meta.iloc[0]
+        else:
+            df_ind = datos_seccion[datos_seccion["nombre indicador"] == nombre]
+            if df_ind.empty:
+                continue
+            fila = df_ind.iloc[0]
 
         # 1. Nombre Indicador
-        nombre_str = (
-            str(nombre).strip()
-            if pd.notna(nombre) and str(nombre).strip() != "" and str(nombre).strip().lower() != "nan"
-            else str(cod_ind)
-        )
+        nombre_str = str(nombre).strip() if pd.notna(nombre) and str(nombre).strip() != "" and str(nombre).strip().lower() != "nan" else "Indicador"
 
         # 2. Proceso
         proceso = fila.get("proceso")
@@ -59,89 +61,18 @@ def generar_tarjetas_contexto_aprendizaje(datos_seccion, indicador_seleccionado=
             else "Registro directo / No especificada"
         )
 
-        # Determinar si esta tarjeta es la seleccionada desde la tabla (por nombre o por código)
-        es_seleccionada = (
+        # Determinar si esta tarjeta es la seleccionada desde la tabla
+        es_seleccionada = bool(
             indicador_seleccionado is not None
-            and (
-                str(nombre_str).strip().lower() == str(indicador_seleccionado).strip().lower()
-                or str(cod_ind).strip().lower() == str(indicador_seleccionado).strip().lower()
-            )
+            and str(nombre_str).strip().lower() == str(indicador_seleccionado).strip().lower()
         )
 
-        clases_tarjeta = "tarjeta-indicador-contexto"
-        if es_seleccionada:
-            clases_tarjeta += " tarjeta-activa-seleccionada"
-
-        if es_seleccionada:
-            texto_btn = "Seleccionado en tabla"
-            flecha_btn = " ▴"
-        else:
-            texto_btn = "Ver detalles"
-            flecha_btn = " ▾"
-
-        cod_ind_str = (
-            str(cod_ind).strip()
-            if pd.notna(cod_ind) and str(cod_ind).strip() != "" and str(cod_ind).strip().lower() != "nan"
-            else "No especificado"
-        )
-
-        tarjeta = html.Details(
-            className=clases_tarjeta,
-            open=es_seleccionada,
-            children=[
-                html.Summary(
-                    className="tarjeta-summary",
-                    children=[
-                        html.Div(
-                            className="tarjeta-summary-izq",
-                            children=[
-                                html.Span(cod_ind_str, className="badge-codigo-indicador"),
-                                html.Span(nombre_str, className="nombre-resumen-indicador"),
-                            ],
-                        ),
-                        html.Span(
-                            className="btn-ver-detalle-tag",
-                            children=[
-                                html.Span(texto_btn, className="texto-btn-detalle"),
-                                html.Span(flecha_btn, className="flecha-btn-detalle"),
-                            ],
-                        ),
-                    ],
-                ),
-                html.Div(
-                    className="tarjeta-cuerpo-detalle",
-                    children=[
-                        html.Div(
-                            className="item-detalle-contexto",
-                            children=[
-                                html.Span("Código Indicador", className="label-detalle-contexto"),
-                                html.Span(cod_ind_str, className="valor-detalle-contexto valor-nombre"),
-                            ],
-                        ),
-                        html.Div(
-                            className="item-detalle-contexto",
-                            children=[
-                                html.Span("Proceso", className="label-detalle-contexto"),
-                                html.Span(proceso_str, className="valor-detalle-contexto"),
-                            ],
-                        ),
-                        html.Div(
-                            className="item-detalle-contexto",
-                            children=[
-                                html.Span("Macroproceso", className="label-detalle-contexto"),
-                                html.Span(macro_str, className="valor-detalle-contexto"),
-                            ],
-                        ),
-                        html.Div(
-                            className="item-detalle-contexto item-formula",
-                            children=[
-                                html.Span("Fórmula de Cálculo", className="label-detalle-contexto"),
-                                html.Div(formula_str, className="valor-detalle-contexto valor-formula"),
-                            ],
-                        ),
-                    ],
-                ),
-            ],
+        tarjeta = generar_tarjeta_contexto_abierta(
+            nombre_str=nombre_str,
+            macro_str=macro_str,
+            proceso_str=proceso_str,
+            formula_str=formula_str,
+            es_seleccionada=es_seleccionada,
         )
         tarjetas.append(tarjeta)
 
@@ -307,3 +238,49 @@ def registrar_callback_aprendizaje(app):
         tarjetas_ui = generar_tarjetas_contexto_aprendizaje(datos_ae, indicador_seleccionado=indicador_seleccionado)
 
         return records, tarjetas_ui
+
+    # ==========================================================================
+    # Callback para Controlar Apertura y Cierre del Modal de Aprendizaje
+    # ==========================================================================
+    @app.callback(
+        Output("modal-contexto-aprendizaje", "style"),
+        Output("modal-titulo-aprendizaje", "children"),
+        Output("modal-cuerpo-aprendizaje", "children"),
+        Input("tabla-aprendizaje", "active_cell"),
+        Input("btn-cerrar-modal-aprendizaje", "n_clicks"),
+        Input("btn-entendido-modal-aprendizaje", "n_clicks"),
+        Input("seccion-actual", "data"),
+        dash.State("tabla-aprendizaje", "data"),
+        prevent_initial_call=True,
+    )
+    def controlar_modal_aprendizaje(active_cell, n_close_x, n_close_btn, seccion_actual, data_tabla):
+        if seccion_actual is not None and seccion_actual != "aprendizaje_evaluacion":
+            return {"display": "none"}, "", ""
+
+        ctx_id = dash.ctx.triggered_id
+        if ctx_id in ("btn-cerrar-modal-aprendizaje", "btn-entendido-modal-aprendizaje"):
+            return {"display": "none"}, "", ""
+
+        if ctx_id == "tabla-aprendizaje" and active_cell is not None and data_tabla:
+            row_idx = active_cell.get("row")
+            if row_idx is not None and 0 <= row_idx < len(data_tabla):
+                nombre_indicador = data_tabla[row_idx].get("nombre_indicador")
+                if nombre_indicador:
+                    df_ind = resultados_completos[
+                        (resultados_completos["agrupador"] == "Aprendizaje y Evaluacion") &
+                        (resultados_completos["nombre indicador"] == nombre_indicador)
+                    ]
+                    if not df_ind.empty:
+                        fila = df_ind.iloc[0]
+                        macro = fila.get("macroproceso")
+                        proceso = fila.get("proceso")
+                        formula = fila.get("formula de calculo")
+                    else:
+                        macro = None
+                        proceso = None
+                        formula = None
+
+                    cuerpo = generar_cuerpo_modal(macro, proceso, formula)
+                    return {"display": "flex"}, nombre_indicador, cuerpo
+
+        return {"display": "none"}, "", ""

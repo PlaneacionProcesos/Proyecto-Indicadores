@@ -1,11 +1,18 @@
 from dash import dcc, html
 from componentes.investigacion.tabla_investigacion import tabla_investigacion
+from componentes.modal_contexto import banner_ayuda_tabla, layout_modal_contexto
+
 
 def layout_investigacion():
 
     return html.Div(
         className="contenedor-investigacion",
         children=[
+            # ==================================================================
+            # Modal de Contexto y Ficha Técnica
+            # ==================================================================
+            layout_modal_contexto("investigacion"),
+
             # ==================================================================
             # Tabla de indicadores de la seccion
             # ==================================================================
@@ -16,6 +23,7 @@ def layout_investigacion():
                         "Indicadores - Investigación",
                         className="titulo-tabla",
                     ),
+                    banner_ayuda_tabla(),
                     html.Div(
                         className="tabla-contenedor",
                         children=[tabla_investigacion()],
@@ -36,7 +44,7 @@ def layout_investigacion():
                                 className="titulo-contexto",
                             ),
                             html.P(
-                                "Haz clic en 'Ver detalles' en cualquier tarjeta para desplegar el macroproceso, proceso y fórmula de cálculo correspondiente.",
+                                "Consulta el macroproceso, proceso y fórmula de cálculo de cada indicador. Al hacer clic en una fila de la tabla, su tarjeta se resaltará automáticamente.",
                                 className="subtitulo-contexto",
                             ),
                         ],
