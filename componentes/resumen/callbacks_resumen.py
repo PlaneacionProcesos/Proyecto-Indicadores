@@ -4,6 +4,8 @@ from datos import resultados_completos
 from configuraciones.agrupadores import DESCRIPCIONES_AGRUPADORES
 import pandas as pd
 import plotly.express as px
+import matplotlib.colors as mcolors
+
 
 
 def registrar_callbacks_resumen(app):
@@ -287,15 +289,24 @@ def registrar_callbacks_resumen(app):
         # GRÁFICO PASTEL
         # ==========================================================================
 
+
+        # ========================================================================== 
+        # GRÁFICO PASTEL
+        # ==========================================================================
+
         if datos_filtrados.empty:
 
-            grafico_pastel = px.pie(title="No hay datos para los filtros seleccionados")
+            grafico_pastel = px.pie(
+                title="No hay datos para los filtros seleccionados"
+            )
 
         else:
 
-            datos_pastel = datos_filtrados.groupby("modalidad", as_index=False)[
-                "resultado"
-            ].sum()
+            datos_pastel = datos_filtrados.groupby(
+                "modalidad",
+                as_index=False
+            )["resultado"].sum()
+
 
         colores_modalidad = {
             "Presencial": "#053074",
@@ -303,6 +314,7 @@ def registrar_callbacks_resumen(app):
             "Distancia": "#FED103",
             "No Aplica": "#AEAEAE",
         }
+
 
         grafico_pastel = px.pie(
             datos_pastel,
@@ -312,6 +324,54 @@ def registrar_callbacks_resumen(app):
             color="modalidad",
             color_discrete_map=colores_modalidad,
         )
+
+
+        # --------------------------------------------------------------------------
+        # COLOR DE LAS ETIQUETAS SEGÚN EL COLOR DEL SEGMENTO
+        # --------------------------------------------------------------------------
+
+        colores_texto = []
+
+        for modalidad in datos_pastel["modalidad"]:
+
+            color = colores_modalidad.get(modalidad, "#FFFFFF")
+
+            # Convertir HEX a RGB
+            rgb = mcolors.to_rgb(color)
+
+            # Calcular luminosidad relativa aproximada
+            luminosidad = (
+                0.299 * rgb[0]
+                + 0.587 * rgb[1]
+                + 0.114 * rgb[2]
+            )
+
+            # Fondo oscuro → texto blanco
+            # Fondo claro → texto negro
+            if luminosidad < 0.55:
+                colores_texto.append("white")
+            else:
+                colores_texto.append("black")
+
+
+        grafico_pastel.update_traces(
+            textposition="inside",
+            textfont=dict(
+                size=14,
+            ),
+        )
+
+
+        # --------------------------------------------------------------------------
+        # APLICAR COLOR INDIVIDUAL A CADA ETIQUETA
+        # --------------------------------------------------------------------------
+
+        grafico_pastel.data[0].textfont.color = colores_texto
+
+
+        # --------------------------------------------------------------------------
+        # CONFIGURACIÓN DEL GRÁFICO
+        # --------------------------------------------------------------------------
 
         grafico_pastel.update_layout(
             title=dict(
@@ -336,13 +396,6 @@ def registrar_callbacks_resumen(app):
                 t=60,
                 b=30,
             ),
-        )
-
-        grafico_pastel.update_traces(
-            textfont=dict(
-                color="black",
-                size=14,
-            )
         )
 
         # ==========================================================================

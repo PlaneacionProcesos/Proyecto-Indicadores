@@ -315,8 +315,8 @@
 
 .contenedor-filtros:has(.segmentadores.oculto) .btn-toggle-filtros {
     right: -36px;
-    background: var(--primary);
-    border-color: var(--primary);
+    background: #79B337;
+    border-color: #79B337;
     color: #ffffff;
     box-shadow: 4px 4px 16px rgba(0, 46, 109, .35);
 }
