@@ -13,14 +13,39 @@ def layout_investigacion():
                 className="tabla-investigacion",
                 children=[
                     html.H3(
-                            "Indicadores - Investigación",
-                            className="titulo-tabla",
-                        ),
+                        "Indicadores - Investigación",
+                        className="titulo-tabla",
+                    ),
                     html.Div(
                         className="tabla-contenedor",
                         children=[tabla_investigacion()],
                     ),
-                ]
-            )
+                ],
+            ),
+            # ==================================================================
+            # Contexto y Fichas de Indicadores (Tarjetas de detalle)
+            # ==================================================================
+            html.Div(
+                className="seccion-contexto-indicadores",
+                children=[
+                    html.Div(
+                        className="encabezado-contexto-indicadores",
+                        children=[
+                            html.H3(
+                                "Contexto y Metodología de los Indicadores",
+                                className="titulo-contexto",
+                            ),
+                            html.P(
+                                "Haz clic en 'Ver detalles' en cualquier tarjeta para desplegar el macroproceso, proceso y fórmula de cálculo correspondiente.",
+                                className="subtitulo-contexto",
+                            ),
+                        ],
+                    ),
+                    html.Div(
+                        id="tarjetas-contexto-investigacion",
+                        className="grid-tarjetas-contexto",
+                    ),
+                ],
+            ),
         ],
     )

@@ -1,4 +1,5 @@
-from dash import Input, Output, html
+import dash
+from dash import Input, Output, State, ctx, html, no_update
 from datos import resultados_completos
 import pandas as pd
 
@@ -15,17 +16,19 @@ def generar_tarjetas_contexto_profesores(datos_seccion, indicador_seleccionado=N
             className="sin-indicadores-contexto",
         )
 
-    indicadores_unicos = datos_seccion["numero_ind"].drop_duplicates()
+    pares_indicadores = datos_seccion[["numero_ind", "nombre indicador"]].drop_duplicates()
     tarjetas = []
 
-    for cod_ind in indicadores_unicos:
+    for _, par in pares_indicadores.iterrows():
+        cod_ind = par["numero_ind"]
+        nombre = par["nombre indicador"]
+
         df_ind = datos_seccion[datos_seccion["numero_ind"] == cod_ind]
         if df_ind.empty:
             continue
         fila = df_ind.iloc[0]
 
         # 1. Nombre Indicador
-        nombre = fila.get("nombre indicador")
         nombre_str = (
             str(nombre).strip()
             if pd.notna(nombre) and str(nombre).strip() != "" and str(nombre).strip().lower() != "nan"
@@ -56,10 +59,13 @@ def generar_tarjetas_contexto_profesores(datos_seccion, indicador_seleccionado=N
             else "Registro directo / No especificada"
         )
 
-        # Determinar si esta tarjeta es la seleccionada desde la tabla
+        # Determinar si esta tarjeta es la seleccionada desde la tabla (por nombre o por código)
         es_seleccionada = (
             indicador_seleccionado is not None
-            and (str(cod_ind) == str(indicador_seleccionado) or nombre_str == str(indicador_seleccionado))
+            and (
+                str(nombre_str).strip().lower() == str(indicador_seleccionado).strip().lower()
+                or str(cod_ind).strip().lower() == str(indicador_seleccionado).strip().lower()
+            )
         )
 
         clases_tarjeta = "tarjeta-indicador-contexto"
@@ -73,6 +79,12 @@ def generar_tarjetas_contexto_profesores(datos_seccion, indicador_seleccionado=N
             texto_btn = "Ver detalles"
             flecha_btn = " ▾"
 
+        cod_ind_str = (
+            str(cod_ind).strip()
+            if pd.notna(cod_ind) and str(cod_ind).strip() != "" and str(cod_ind).strip().lower() != "nan"
+            else "No especificado"
+        )
+
         tarjeta = html.Details(
             className=clases_tarjeta,
             open=es_seleccionada,
@@ -83,7 +95,7 @@ def generar_tarjetas_contexto_profesores(datos_seccion, indicador_seleccionado=N
                         html.Div(
                             className="tarjeta-summary-izq",
                             children=[
-                                html.Span(str(cod_ind), className="badge-codigo-indicador"),
+                                html.Span(cod_ind_str, className="badge-codigo-indicador"),
                                 html.Span(nombre_str, className="nombre-resumen-indicador"),
                             ],
                         ),
@@ -102,8 +114,8 @@ def generar_tarjetas_contexto_profesores(datos_seccion, indicador_seleccionado=N
                         html.Div(
                             className="item-detalle-contexto",
                             children=[
-                                html.Span("Nombre Indicador", className="label-detalle-contexto"),
-                                html.Span(nombre_str, className="valor-detalle-contexto valor-nombre"),
+                                html.Span("Código Indicador", className="label-detalle-contexto"),
+                                html.Span(cod_ind_str, className="valor-detalle-contexto valor-nombre"),
                             ],
                         ),
                         html.Div(
@@ -138,11 +150,12 @@ def generar_tarjetas_contexto_profesores(datos_seccion, indicador_seleccionado=N
 
 def registrar_callback_profersores(app):
 
-    # --------------------------------------------------------------------------
-    # 1. Callback de Datos de la Tabla de Profesores
-    # --------------------------------------------------------------------------
+    # ==========================================================================
+    # Callback Unificado de Alto Rendimiento (Tabla + Tarjetas de Profesores)
+    # ==========================================================================
     @app.callback(
         Output("tabla-profesores", "data"),
+        Output("tarjetas-contexto-profesores", "children"),
         Input("filtro-año", "value"),
         Input("filtro-centro", "value"),
         Input("filtro-periodo", "value"),
@@ -150,8 +163,19 @@ def registrar_callback_profersores(app):
         Input("filtro-modalidad", "value"),
         Input("filtro-tipo", "value"),
         Input("filtro-tiempo-reporte", "value"),
+        Input("tabla-profesores", "active_cell"),
+        Input("seccion-actual", "data"),
+        dash.State("tabla-profesores", "data"),
     )
-    def datos_tabla(año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte):
+    def datos_y_tarjetas_profesores(
+        año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte,
+        active_cell, seccion_actual, data_tabla_actual
+    ):
+        # 1. Guard de Sección: Si la sección activa no es Profesores, abortar al instante
+        if seccion_actual is not None and seccion_actual != "profesores":
+            return dash.no_update, dash.no_update
+
+        # 2. Filtrar DataFrame del agrupador
         datos_ae = resultados_completos[
             resultados_completos["agrupador"] == "Profesores"
         ].copy()
@@ -189,6 +213,17 @@ def registrar_callback_profersores(app):
                     datos_ae["tiempo de reporte"].astype(str) == str(tiempo_reporte)
                 ]
 
+        # 3. Optimización de clic en celda activa (no recalcular tabla)
+        disparador = dash.ctx.triggered_id
+        if disparador == "tabla-profesores" and data_tabla_actual:
+            indicador_sel = None
+            if active_cell is not None:
+                row_idx = active_cell.get("row")
+                if row_idx is not None and 0 <= row_idx < len(data_tabla_actual):
+                    indicador_sel = data_tabla_actual[row_idx].get("nombre_indicador")
+            return dash.no_update, generar_tarjetas_contexto_profesores(datos_ae, indicador_seleccionado=indicador_sel)
+
+        # 4. Procesar datos para la tabla
         if datos_ae.empty:
             df_resultado = pd.DataFrame(
                 columns=[
@@ -200,27 +235,27 @@ def registrar_callback_profersores(app):
                     "porcentaje_variacion",
                 ]
             )
-            return df_resultado.to_dict("records")
+            return df_resultado.to_dict("records"), generar_tarjetas_contexto_profesores(datos_ae)
 
-        indicadores = datos_ae["numero_ind"].drop_duplicates()
+        indicadores = datos_ae["nombre indicador"].drop_duplicates()
         df_resultado = pd.DataFrame({"nombre_indicador": indicadores})
 
         serie_2024 = (
             datos_ae[datos_ae["ano"] == 2024]
             .dropna(subset=["resultado"])
-            .groupby("numero_ind")["resultado"]
+            .groupby("nombre indicador")["resultado"]
             .mean()
         )
         serie_2025 = (
             datos_ae[datos_ae["ano"] == 2025]
             .dropna(subset=["resultado"])
-            .groupby("numero_ind")["resultado"]
+            .groupby("nombre indicador")["resultado"]
             .mean()
         )
         serie_2026 = (
             datos_ae[datos_ae["ano"] == 2026]
             .dropna(subset=["resultado"])
-            .groupby("numero_ind")["resultado"]
+            .groupby("nombre indicador")["resultado"]
             .mean()
         )
 
@@ -261,67 +296,14 @@ def registrar_callback_profersores(app):
             for a, b in zip(val_2026, val_2025)
         ]
 
-        return df_resultado.to_dict("records")
-
-    # --------------------------------------------------------------------------
-    # 2. Callback de Tarjetas de Contexto con Selección Interactiva
-    # --------------------------------------------------------------------------
-    @app.callback(
-        Output("tarjetas-contexto-profesores", "children"),
-        Input("tabla-profesores", "data"),
-        Input("tabla-profesores", "active_cell"),
-        Input("filtro-año", "value"),
-        Input("filtro-centro", "value"),
-        Input("filtro-periodo", "value"),
-        Input("filtro-nivel", "value"),
-        Input("filtro-modalidad", "value"),
-        Input("filtro-tipo", "value"),
-        Input("filtro-tiempo-reporte", "value"),
-    )
-    def actualizar_tarjetas_profesores(
-        data_tabla, active_cell, año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte
-    ):
-        datos_ae = resultados_completos[
-            resultados_completos["agrupador"] == "Profesores"
-        ].copy()
-
-        if año is not None and año != "Historico":
-            try:
-                if int(año) in datos_ae["ano"].values:
-                    datos_ae = datos_ae[datos_ae["ano"] == int(año)]
-            except (ValueError, TypeError):
-                pass
-
-        if centro is not None and centro != "Todos":
-            if centro in datos_ae["centro_universitario"].values:
-                datos_ae = datos_ae[datos_ae["centro_universitario"] == centro]
-
-        if periodo is not None and periodo != "Todos":
-            if periodo in datos_ae["periodo academico"].values:
-                datos_ae = datos_ae[datos_ae["periodo academico"] == periodo]
-
-        if nivel is not None and nivel != "Todos":
-            if nivel in datos_ae["nivel academico"].values:
-                datos_ae = datos_ae[datos_ae["nivel academico"] == nivel]
-
-        if modalidad is not None and modalidad != "Todos":
-            if modalidad in datos_ae["modalidad"].values:
-                datos_ae = datos_ae[datos_ae["modalidad"] == modalidad]
-
-        if tipo is not None and tipo != "Todos":
-            if tipo in datos_ae["tipo de indicador"].values:
-                datos_ae = datos_ae[datos_ae["tipo de indicador"] == tipo]
-
-        if tiempo_reporte is not None and tiempo_reporte != "Todos":
-            if str(tiempo_reporte) in datos_ae["tiempo de reporte"].astype(str).values:
-                datos_ae = datos_ae[
-                    datos_ae["tiempo de reporte"].astype(str) == str(tiempo_reporte)
-                ]
+        records = df_resultado.to_dict("records")
 
         indicador_seleccionado = None
-        if active_cell is not None and data_tabla is not None:
+        if active_cell is not None:
             row_idx = active_cell.get("row")
-            if row_idx is not None and 0 <= row_idx < len(data_tabla):
-                indicador_seleccionado = data_tabla[row_idx].get("nombre_indicador")
+            if row_idx is not None and 0 <= row_idx < len(records):
+                indicador_seleccionado = records[row_idx].get("nombre_indicador")
 
-        return generar_tarjetas_contexto_profesores(datos_ae, indicador_seleccionado=indicador_seleccionado)
+        tarjetas_ui = generar_tarjetas_contexto_profesores(datos_ae, indicador_seleccionado=indicador_seleccionado)
+
+        return records, tarjetas_ui

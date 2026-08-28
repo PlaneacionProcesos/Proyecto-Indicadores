@@ -95,6 +95,7 @@ def tabla_aprendizaje():
             "textAlign": "left",
             "whiteSpace": "normal",
             "height": "auto",
+            "cursor": "pointer",
         },
         style_header={
             "fontWeight": "bold",
@@ -108,4 +109,16 @@ def tabla_aprendizaje():
             "color": "#1f2937",
             "textAlign": "center",
         },
+        style_data_conditional=[
+            {
+                "if": {"state": "active"},
+                "backgroundColor": "rgba(71, 212, 90, 0.22) !important",
+                "border": "1px solid #002e6d !important",
+                "fontWeight": "bold",
+            },
+            {
+                "if": {"state": "selected"},
+                "backgroundColor": "rgba(71, 212, 90, 0.15) !important",
+            },
+        ],
     )

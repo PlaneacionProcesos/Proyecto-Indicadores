@@ -1,16 +1,14 @@
-from dash import Input, Output, html
+import dash
+from dash import Input, Output, State, ctx, html, no_update
 from datos import resultados_completos
 import pandas as pd
 
 
-def generar_tarjetas_contexto_aprendizaje(datos_seccion):
+def generar_tarjetas_contexto_aprendizaje(datos_seccion, indicador_seleccionado=None):
     """
     Genera tarjetas interactivas de contexto para cada indicador del agrupador.
-    Muestra:
-      - Nombre indicador
-      - Proceso
-      - Macroproceso
-      - Formula de calculo
+    Si un indicador fue clickeado en la tabla (indicador_seleccionado),
+    su tarjeta se colorea/resalta y se abre automáticamente.
     """
     if datos_seccion.empty:
         return html.Div(
@@ -18,17 +16,19 @@ def generar_tarjetas_contexto_aprendizaje(datos_seccion):
             className="sin-indicadores-contexto",
         )
 
-    indicadores_unicos = datos_seccion["numero_ind"].drop_duplicates()
+    pares_indicadores = datos_seccion[["numero_ind", "nombre indicador"]].drop_duplicates()
     tarjetas = []
 
-    for cod_ind in indicadores_unicos:
+    for _, par in pares_indicadores.iterrows():
+        cod_ind = par["numero_ind"]
+        nombre = par["nombre indicador"]
+
         df_ind = datos_seccion[datos_seccion["numero_ind"] == cod_ind]
         if df_ind.empty:
             continue
         fila = df_ind.iloc[0]
 
         # 1. Nombre Indicador
-        nombre = fila.get("nombre indicador")
         nombre_str = (
             str(nombre).strip()
             if pd.notna(nombre) and str(nombre).strip() != "" and str(nombre).strip().lower() != "nan"
@@ -59,8 +59,35 @@ def generar_tarjetas_contexto_aprendizaje(datos_seccion):
             else "Registro directo / No especificada"
         )
 
+        # Determinar si esta tarjeta es la seleccionada desde la tabla (por nombre o por código)
+        es_seleccionada = (
+            indicador_seleccionado is not None
+            and (
+                str(nombre_str).strip().lower() == str(indicador_seleccionado).strip().lower()
+                or str(cod_ind).strip().lower() == str(indicador_seleccionado).strip().lower()
+            )
+        )
+
+        clases_tarjeta = "tarjeta-indicador-contexto"
+        if es_seleccionada:
+            clases_tarjeta += " tarjeta-activa-seleccionada"
+
+        if es_seleccionada:
+            texto_btn = "Seleccionado en tabla"
+            flecha_btn = " ▴"
+        else:
+            texto_btn = "Ver detalles"
+            flecha_btn = " ▾"
+
+        cod_ind_str = (
+            str(cod_ind).strip()
+            if pd.notna(cod_ind) and str(cod_ind).strip() != "" and str(cod_ind).strip().lower() != "nan"
+            else "No especificado"
+        )
+
         tarjeta = html.Details(
-            className="tarjeta-indicador-contexto",
+            className=clases_tarjeta,
+            open=es_seleccionada,
             children=[
                 html.Summary(
                     className="tarjeta-summary",
@@ -68,15 +95,15 @@ def generar_tarjetas_contexto_aprendizaje(datos_seccion):
                         html.Div(
                             className="tarjeta-summary-izq",
                             children=[
-                                html.Span(str(cod_ind), className="badge-codigo-indicador"),
+                                html.Span(cod_ind_str, className="badge-codigo-indicador"),
                                 html.Span(nombre_str, className="nombre-resumen-indicador"),
                             ],
                         ),
                         html.Span(
                             className="btn-ver-detalle-tag",
                             children=[
-                                html.Span("Ver detalles", className="texto-btn-detalle"),
-                                html.Span(" ▾", className="flecha-btn-detalle"),
+                                html.Span(texto_btn, className="texto-btn-detalle"),
+                                html.Span(flecha_btn, className="flecha-btn-detalle"),
                             ],
                         ),
                     ],
@@ -87,8 +114,8 @@ def generar_tarjetas_contexto_aprendizaje(datos_seccion):
                         html.Div(
                             className="item-detalle-contexto",
                             children=[
-                                html.Span("Nombre Indicador", className="label-detalle-contexto"),
-                                html.Span(nombre_str, className="valor-detalle-contexto valor-nombre"),
+                                html.Span("Código Indicador", className="label-detalle-contexto"),
+                                html.Span(cod_ind_str, className="valor-detalle-contexto valor-nombre"),
                             ],
                         ),
                         html.Div(
@@ -123,6 +150,9 @@ def generar_tarjetas_contexto_aprendizaje(datos_seccion):
 
 def registrar_callback_aprendizaje(app):
 
+    # ==========================================================================
+    # Callback Unificado de Alto Rendimiento (Tabla + Tarjetas de Aprendizaje)
+    # ==========================================================================
     @app.callback(
         Output("tabla-aprendizaje", "data"),
         Output("tarjetas-contexto-aprendizaje", "children"),
@@ -133,19 +163,23 @@ def registrar_callback_aprendizaje(app):
         Input("filtro-modalidad", "value"),
         Input("filtro-tipo", "value"),
         Input("filtro-tiempo-reporte", "value"),
+        Input("tabla-aprendizaje", "active_cell"),
+        Input("seccion-actual", "data"),
+        dash.State("tabla-aprendizaje", "data"),
     )
-    def datos_tabla(año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte):
+    def datos_y_tarjetas_aprendizaje(
+        año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte,
+        active_cell, seccion_actual, data_tabla_actual
+    ):
+        # 1. Guard de Sección
+        if seccion_actual is not None and seccion_actual != "aprendizaje_evaluacion":
+            return dash.no_update, dash.no_update
 
-        # --------------------------------------------------------------------------
-        # 1. Filtrar primero por el agrupador de la sección
-        # --------------------------------------------------------------------------
+        # 2. Filtrar DataFrame del agrupador
         datos_ae = resultados_completos[
             resultados_completos["agrupador"] == "Aprendizaje y Evaluacion"
         ].copy()
 
-        # --------------------------------------------------------------------------
-        # 2. Aplicar Filtros sobre el agrupador
-        # --------------------------------------------------------------------------
         if año is not None and año != "Historico":
             try:
                 if int(año) in datos_ae["ano"].values:
@@ -179,9 +213,17 @@ def registrar_callback_aprendizaje(app):
                     datos_ae["tiempo de reporte"].astype(str) == str(tiempo_reporte)
                 ]
 
-        # --------------------------------------------------------------------------
-        # 3. Procesar datos para la tabla
-        # --------------------------------------------------------------------------
+        # 3. Optimización de clic en celda activa
+        disparador = dash.ctx.triggered_id
+        if disparador == "tabla-aprendizaje" and data_tabla_actual:
+            indicador_sel = None
+            if active_cell is not None:
+                row_idx = active_cell.get("row")
+                if row_idx is not None and 0 <= row_idx < len(data_tabla_actual):
+                    indicador_sel = data_tabla_actual[row_idx].get("nombre_indicador")
+            return dash.no_update, generar_tarjetas_contexto_aprendizaje(datos_ae, indicador_seleccionado=indicador_sel)
+
+        # 4. Procesar datos para la tabla
         if datos_ae.empty:
             df_resultado = pd.DataFrame(
                 columns=[
@@ -193,46 +235,34 @@ def registrar_callback_aprendizaje(app):
                     "porcentaje_variacion",
                 ]
             )
-            return df_resultado.to_dict("records"),generar_tarjetas_contexto_aprendizaje(datos_ae)
+            return df_resultado.to_dict("records"), generar_tarjetas_contexto_aprendizaje(datos_ae)
 
-        # Indicadores únicos del agrupador
-        indicadores = datos_ae["numero_ind"].drop_duplicates()
-
-        # Crear una fila por indicador
+        indicadores = datos_ae["nombre indicador"].drop_duplicates()
         df_resultado = pd.DataFrame({"nombre_indicador": indicadores})
 
-        # =========================
-        # DATOS NUMÉRICOS POR AÑO
-        # =========================
         serie_2024 = (
             datos_ae[datos_ae["ano"] == 2024]
             .dropna(subset=["resultado"])
-            .groupby("numero_ind")["resultado"]
+            .groupby("nombre indicador")["resultado"]
             .mean()
         )
-
         serie_2025 = (
             datos_ae[datos_ae["ano"] == 2025]
             .dropna(subset=["resultado"])
-            .groupby("numero_ind")["resultado"]
+            .groupby("nombre indicador")["resultado"]
             .mean()
         )
-
         serie_2026 = (
             datos_ae[datos_ae["ano"] == 2026]
             .dropna(subset=["resultado"])
-            .groupby("numero_ind")["resultado"]
+            .groupby("nombre indicador")["resultado"]
             .mean()
         )
 
-        # Mapear valores numéricos
         val_2024 = df_resultado["nombre_indicador"].map(serie_2024)
         val_2025 = df_resultado["nombre_indicador"].map(serie_2025)
         val_2026 = df_resultado["nombre_indicador"].map(serie_2026)
 
-        # =========================
-        # COLUMNAS POR AÑO
-        # =========================
         df_resultado["año-2024"] = val_2024.apply(
             lambda x: round(x, 2) if pd.notna(x) else "Sin datos"
         )
@@ -243,9 +273,6 @@ def registrar_callback_aprendizaje(app):
             lambda x: round(x, 2) if pd.notna(x) else "Sin datos"
         )
 
-        # =========================
-        # VARIACIÓN ABSOLUTA Y PORCENTUAL (2026 vs 2025)
-        # =========================
         def calcular_variacion_absoluta(v_actual, v_anterior):
             if pd.notna(v_actual) and pd.notna(v_anterior):
                 diff = v_actual - v_anterior
@@ -261,13 +288,22 @@ def registrar_callback_aprendizaje(app):
             return "Sin datos"
 
         df_resultado["variacion-ultimos_dos"] = [
-            calcular_variacion_absoluta(a, b) for a, b in zip(val_2026, val_2025)
+            calcular_variacion_absoluta(a, b)
+            for a, b in zip(val_2026, val_2025)
         ]
-
         df_resultado["porcentaje_variacion"] = [
-            calcular_variacion_porcentual(a, b) for a, b in zip(val_2026, val_2025)
+            calcular_variacion_porcentual(a, b)
+            for a, b in zip(val_2026, val_2025)
         ]
 
-        tarjetas_ui = generar_tarjetas_contexto_aprendizaje(datos_ae)
+        records = df_resultado.to_dict("records")
 
-        return df_resultado.to_dict("records"), tarjetas_ui
+        indicador_seleccionado = None
+        if active_cell is not None:
+            row_idx = active_cell.get("row")
+            if row_idx is not None and 0 <= row_idx < len(records):
+                indicador_seleccionado = records[row_idx].get("nombre_indicador")
+
+        tarjetas_ui = generar_tarjetas_contexto_aprendizaje(datos_ae, indicador_seleccionado=indicador_seleccionado)
+
+        return records, tarjetas_ui
