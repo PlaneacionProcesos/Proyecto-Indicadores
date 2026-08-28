@@ -421,6 +421,43 @@
     background: #FFFFFF;
 }
 
+/* =========================================================
+   ESTADO SELECCIONADO / RESALTADO DESDE LA TABLA
+   ========================================================= */
+
+.tarjeta-indicador-contexto.tarjeta-activa-seleccionada {
+    border: 2px solid #002e6d !important;
+    background: #FFFFFF !important;
+    box-shadow: 0 0 0 4px rgba(71, 212, 90, 0.38), 0 8px 24px rgba(0, 46, 109, 0.18) !important;
+    transform: translateY(-3px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+}
+
+.tarjeta-indicador-contexto.tarjeta-activa-seleccionada .tarjeta-summary {
+    background: linear-gradient(90deg, rgba(71, 212, 90, 0.2) 0%, rgba(0, 46, 109, 0.05) 100%) !important;
+}
+
+.tarjeta-indicador-contexto.tarjeta-activa-seleccionada .badge-codigo-indicador {
+    background: #002e6d !important;
+    color: #47D45A !important;
+    border: 1px solid #47D45A;
+    box-shadow: 0 2px 6px rgba(71, 212, 90, 0.4);
+}
+
+.tarjeta-indicador-contexto.tarjeta-activa-seleccionada .nombre-resumen-indicador {
+    color: #002e6d;
+    font-weight: 700;
+}
+
+.tarjeta-indicador-contexto.tarjeta-activa-seleccionada .btn-ver-detalle-tag {
+    background: #002e6d !important;
+    color: #47D45A !important;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 46, 109, 0.25);
+}
+
 .tarjeta-summary {
     cursor: pointer;
     padding: 14px 16px;

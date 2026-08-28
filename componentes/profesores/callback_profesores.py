@@ -3,14 +3,11 @@ from datos import resultados_completos
 import pandas as pd
 
 
-def generar_tarjetas_contexto_profesores(datos_seccion):
+def generar_tarjetas_contexto_profesores(datos_seccion, indicador_seleccionado=None):
     """
     Genera tarjetas interactivas de contexto para cada indicador del agrupador.
-    Muestra:
-      - Nombre indicador
-      - Proceso
-      - Macroproceso
-      - Formula de calculo
+    Si un indicador fue clickeado en la tabla (indicador_seleccionado),
+    su tarjeta se colorea/resalta y se abre automáticamente.
     """
     if datos_seccion.empty:
         return html.Div(
@@ -59,8 +56,26 @@ def generar_tarjetas_contexto_profesores(datos_seccion):
             else "Registro directo / No especificada"
         )
 
+        # Determinar si esta tarjeta es la seleccionada desde la tabla
+        es_seleccionada = (
+            indicador_seleccionado is not None
+            and (str(cod_ind) == str(indicador_seleccionado) or nombre_str == str(indicador_seleccionado))
+        )
+
+        clases_tarjeta = "tarjeta-indicador-contexto"
+        if es_seleccionada:
+            clases_tarjeta += " tarjeta-activa-seleccionada"
+
+        if es_seleccionada:
+            texto_btn = "Seleccionado en tabla"
+            flecha_btn = " ▴"
+        else:
+            texto_btn = "Ver detalles"
+            flecha_btn = " ▾"
+
         tarjeta = html.Details(
-            className="tarjeta-indicador-contexto",
+            className=clases_tarjeta,
+            open=es_seleccionada,
             children=[
                 html.Summary(
                     className="tarjeta-summary",
@@ -75,8 +90,8 @@ def generar_tarjetas_contexto_profesores(datos_seccion):
                         html.Span(
                             className="btn-ver-detalle-tag",
                             children=[
-                                html.Span("Ver detalles", className="texto-btn-detalle"),
-                                html.Span(" ▾", className="flecha-btn-detalle"),
+                                html.Span(texto_btn, className="texto-btn-detalle"),
+                                html.Span(flecha_btn, className="flecha-btn-detalle"),
                             ],
                         ),
                     ],
@@ -123,9 +138,11 @@ def generar_tarjetas_contexto_profesores(datos_seccion):
 
 def registrar_callback_profersores(app):
 
+    # --------------------------------------------------------------------------
+    # 1. Callback de Datos de la Tabla de Profesores
+    # --------------------------------------------------------------------------
     @app.callback(
         Output("tabla-profesores", "data"),
-        Output("tarjetas-contexto-profesores", "children"),
         Input("filtro-año", "value"),
         Input("filtro-centro", "value"),
         Input("filtro-periodo", "value"),
@@ -135,17 +152,10 @@ def registrar_callback_profersores(app):
         Input("filtro-tiempo-reporte", "value"),
     )
     def datos_tabla(año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte):
-
-        # --------------------------------------------------------------------------
-        # 1. Filtrar primero por el agrupador de la sección
-        # --------------------------------------------------------------------------
         datos_ae = resultados_completos[
             resultados_completos["agrupador"] == "Profesores"
         ].copy()
 
-        # --------------------------------------------------------------------------
-        # 2. Aplicar Filtros sobre el agrupador
-        # --------------------------------------------------------------------------
         if año is not None and año != "Historico":
             try:
                 if int(año) in datos_ae["ano"].values:
@@ -179,9 +189,6 @@ def registrar_callback_profersores(app):
                     datos_ae["tiempo de reporte"].astype(str) == str(tiempo_reporte)
                 ]
 
-        # --------------------------------------------------------------------------
-        # 3. Procesar datos para la tabla y tarjetas
-        # --------------------------------------------------------------------------
         if datos_ae.empty:
             df_resultado = pd.DataFrame(
                 columns=[
@@ -193,33 +200,23 @@ def registrar_callback_profersores(app):
                     "porcentaje_variacion",
                 ]
             )
-            return df_resultado.to_dict("records"), generar_tarjetas_contexto_profesores(datos_ae)
+            return df_resultado.to_dict("records")
 
-        # Indicadores únicos del agrupador
         indicadores = datos_ae["numero_ind"].drop_duplicates()
+        df_resultado = pd.DataFrame({"nombre_indicador": indicadores})
 
-        # Crear una fila por indicador
-        df_resultado = pd.DataFrame({
-            "nombre_indicador": indicadores
-        })
-
-        # =========================
-        # DATOS NUMÉRICOS POR AÑO
-        # =========================
         serie_2024 = (
             datos_ae[datos_ae["ano"] == 2024]
             .dropna(subset=["resultado"])
             .groupby("numero_ind")["resultado"]
             .mean()
         )
-
         serie_2025 = (
             datos_ae[datos_ae["ano"] == 2025]
             .dropna(subset=["resultado"])
             .groupby("numero_ind")["resultado"]
             .mean()
         )
-
         serie_2026 = (
             datos_ae[datos_ae["ano"] == 2026]
             .dropna(subset=["resultado"])
@@ -227,14 +224,10 @@ def registrar_callback_profersores(app):
             .mean()
         )
 
-        # Mapear valores numéricos
         val_2024 = df_resultado["nombre_indicador"].map(serie_2024)
         val_2025 = df_resultado["nombre_indicador"].map(serie_2025)
         val_2026 = df_resultado["nombre_indicador"].map(serie_2026)
 
-        # =========================
-        # COLUMNAS POR AÑO
-        # =========================
         df_resultado["año-2024"] = val_2024.apply(
             lambda x: round(x, 2) if pd.notna(x) else "Sin datos"
         )
@@ -245,9 +238,6 @@ def registrar_callback_profersores(app):
             lambda x: round(x, 2) if pd.notna(x) else "Sin datos"
         )
 
-        # =========================
-        # VARIACIÓN ABSOLUTA Y PORCENTUAL (2026 vs 2025)
-        # =========================
         def calcular_variacion_absoluta(v_actual, v_anterior):
             if pd.notna(v_actual) and pd.notna(v_anterior):
                 diff = v_actual - v_anterior
@@ -266,12 +256,72 @@ def registrar_callback_profersores(app):
             calcular_variacion_absoluta(a, b)
             for a, b in zip(val_2026, val_2025)
         ]
-
         df_resultado["porcentaje_variacion"] = [
             calcular_variacion_porcentual(a, b)
             for a, b in zip(val_2026, val_2025)
         ]
 
-        tarjetas_ui = generar_tarjetas_contexto_profesores(datos_ae)
+        return df_resultado.to_dict("records")
 
-        return df_resultado.to_dict("records"), tarjetas_ui
+    # --------------------------------------------------------------------------
+    # 2. Callback de Tarjetas de Contexto con Selección Interactiva
+    # --------------------------------------------------------------------------
+    @app.callback(
+        Output("tarjetas-contexto-profesores", "children"),
+        Input("tabla-profesores", "data"),
+        Input("tabla-profesores", "active_cell"),
+        Input("filtro-año", "value"),
+        Input("filtro-centro", "value"),
+        Input("filtro-periodo", "value"),
+        Input("filtro-nivel", "value"),
+        Input("filtro-modalidad", "value"),
+        Input("filtro-tipo", "value"),
+        Input("filtro-tiempo-reporte", "value"),
+    )
+    def actualizar_tarjetas_profesores(
+        data_tabla, active_cell, año, centro, periodo, nivel, modalidad, tipo, tiempo_reporte
+    ):
+        datos_ae = resultados_completos[
+            resultados_completos["agrupador"] == "Profesores"
+        ].copy()
+
+        if año is not None and año != "Historico":
+            try:
+                if int(año) in datos_ae["ano"].values:
+                    datos_ae = datos_ae[datos_ae["ano"] == int(año)]
+            except (ValueError, TypeError):
+                pass
+
+        if centro is not None and centro != "Todos":
+            if centro in datos_ae["centro_universitario"].values:
+                datos_ae = datos_ae[datos_ae["centro_universitario"] == centro]
+
+        if periodo is not None and periodo != "Todos":
+            if periodo in datos_ae["periodo academico"].values:
+                datos_ae = datos_ae[datos_ae["periodo academico"] == periodo]
+
+        if nivel is not None and nivel != "Todos":
+            if nivel in datos_ae["nivel academico"].values:
+                datos_ae = datos_ae[datos_ae["nivel academico"] == nivel]
+
+        if modalidad is not None and modalidad != "Todos":
+            if modalidad in datos_ae["modalidad"].values:
+                datos_ae = datos_ae[datos_ae["modalidad"] == modalidad]
+
+        if tipo is not None and tipo != "Todos":
+            if tipo in datos_ae["tipo de indicador"].values:
+                datos_ae = datos_ae[datos_ae["tipo de indicador"] == tipo]
+
+        if tiempo_reporte is not None and tiempo_reporte != "Todos":
+            if str(tiempo_reporte) in datos_ae["tiempo de reporte"].astype(str).values:
+                datos_ae = datos_ae[
+                    datos_ae["tiempo de reporte"].astype(str) == str(tiempo_reporte)
+                ]
+
+        indicador_seleccionado = None
+        if active_cell is not None and data_tabla is not None:
+            row_idx = active_cell.get("row")
+            if row_idx is not None and 0 <= row_idx < len(data_tabla):
+                indicador_seleccionado = data_tabla[row_idx].get("nombre_indicador")
+
+        return generar_tarjetas_contexto_profesores(datos_ae, indicador_seleccionado=indicador_seleccionado)
