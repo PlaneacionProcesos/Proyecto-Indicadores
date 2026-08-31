@@ -1,5 +1,8 @@
 .env
+venv/
 __pycache__/
 *.pyc
 backup data/
 ~$*.xlsx
+* - copia.xlsx
+*.tmp

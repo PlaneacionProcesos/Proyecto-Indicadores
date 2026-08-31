@@ -1,4 +1,4 @@
-from dash import Input, Output, html
+from dash import Input, Output
 
 
 def registrar_callback_ocultar_filtros (app):

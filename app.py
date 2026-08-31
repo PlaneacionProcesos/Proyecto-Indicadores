@@ -1,7 +1,5 @@
 from dash import Dash, dcc, html
 
-from datos import resultados_completos
-
 from secciones.resumen import layout_resumen
 from secciones.aprendizaje_evaluacion import layout_aprendizaje
 from componentes.db.vistas_crud import layout_documentos
@@ -20,13 +18,7 @@ from componentes.db.callbacks_db import registrar_callbacks_db
 from componentes.navegacion.callback_navegacion import registrar_callbacks_navegacion
 from componentes.resumen.callbacks_resumen import registrar_callbacks_resumen
 from callbacks_ocultar_filtros import registrar_callback_ocultar_filtros
-from componentes.aprendizaje_y_evaluacion.callback_aprendizaje import registrar_callback_aprendizaje
-from componentes.profesores.callback_profesores import registrar_callback_profersores
-from componentes.estudiantes.callback_estudiantes import registrar_callback_estudiantes
-from componentes.impacto.callback_impacto import registrar_callback_impacto
-from componentes.investigacion.callback_investigacion import registrar_callback_investigacion
-from componentes.siac.callback_siac import registrar_callback_siac
-from componentes.sostenibilidad.callback_sostenibilidad import registrar_callback_sostenibilidad
+from componentes.factory import registrar_callbacks_todas_secciones
 
 
 app = Dash(__name__, suppress_callback_exceptions=True)
@@ -178,19 +170,7 @@ registrar_callbacks_db(app)
 
 registrar_callback_ocultar_filtros(app)
 
-registrar_callback_aprendizaje(app)
-
-registrar_callback_profersores(app)
-
-registrar_callback_estudiantes(app)
-
-registrar_callback_impacto(app)
-
-registrar_callback_investigacion(app)
-
-registrar_callback_siac(app)
-
-registrar_callback_sostenibilidad(app)
+registrar_callbacks_todas_secciones(app)
 
 # ========================================================================================
 #                                      WSGI / EJECUCIÓN
@@ -198,7 +178,6 @@ registrar_callback_sostenibilidad(app)
 
 server = app.server
 handler = server
-app = server
 
 if __name__ == "__main__":
-    server.run(debug=True)
+    app.run(debug=True)

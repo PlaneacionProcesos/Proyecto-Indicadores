@@ -580,27 +580,4 @@ except Exception as e:
     print("\nERROR DURANTE LA EXPORTACION")
     print(e)
 
-
-# ========================================================================================
-#                                   DEBUG
-# ========================================================================================
-
-# Descomenta si quieres inspeccionar los DataFrames
-
-# pd.set_option("display.max_columns", None)
-
-# print("\n")
-# print("TABLA INDICADORES")
-# print(indicadores.head())
-
-# print("\n")
-# print("TABLA CENTROS UNIVERSITARIOS")
-# print(centros_universitarios.head())
-
-# print("\n")
-# print("TABLA RESULTADOS")
-# print(resultados.head())
-
-# print("\n")
-# print("DATASET COMPLETO")
-# print(df_completo.head())
+

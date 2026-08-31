@@ -1,4 +1,4 @@
-from dash import Input, Output, html, ctx
+from dash import Input, Output, ctx
 from componentes.navegacion.navegacion import ICONOS_NAVEGACION
 
 

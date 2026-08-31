@@ -121,8 +121,8 @@ def generar_cuerpo_modal(
     campo1_val=None,
     campo2_val=None,
     formula=None,
-    label1="Macroproceso",
-    label2="Proceso",
+    label1="Responsable",
+    label2="Tiempo de Reporte",
     numero_ind=None,
 ):
     """
@@ -130,6 +130,8 @@ def generar_cuerpo_modal(
     Permite personalizar las etiquetas (por ejemplo, 'Responsable' y 'Tiempo de Reporte')
     e incluir el número/código de indicador (numero_ind).
     """
+    lbl1 = label1 if label1 else "Responsable"
+    lbl2 = label2 if label2 else "Tiempo de Reporte"
     val1_str = (
         str(campo1_val).strip()
         if pd.notna(campo1_val) and str(campo1_val).strip() != "" and str(campo1_val).strip().lower() != "nan"
@@ -168,14 +170,14 @@ def generar_cuerpo_modal(
         html.Div(
             className="modal-campo-grupo",
             children=[
-                html.Span(label1, className="modal-campo-label"),
+                html.Span(lbl1, className="modal-campo-label"),
                 html.Span(val1_str, className="modal-campo-valor"),
             ],
         ),
         html.Div(
             className="modal-campo-grupo",
             children=[
-                html.Span(label2, className="modal-campo-label"),
+                html.Span(lbl2, className="modal-campo-label"),
                 html.Span(val2_str, className="modal-campo-valor"),
             ],
         ),
@@ -191,61 +193,6 @@ def generar_cuerpo_modal(
     return html.Div(
         className="modal-cuerpo-grid",
         children=campos,
-    )
-
-
-def generar_tarjeta_contexto_abierta(nombre_str, macro_str, proceso_str, formula_str, es_seleccionada=False):
-    """
-    Genera una tarjeta de contexto abierta por defecto (sin necesidad de desplegar),
-    resaltando la tarjeta si es_seleccionada es True.
-    """
-    clases_tarjeta = "tarjeta-indicador-contexto"
-    if es_seleccionada:
-        clases_tarjeta += " tarjeta-activa-seleccionada"
-
-    badge_sel = (
-        html.Span("Seleccionado en tabla", className="badge-seleccionado-tabla")
-        if es_seleccionada
-        else None
-    )
-
-    return html.Div(
-        className=clases_tarjeta,
-        children=[
-            html.Div(
-                className="tarjeta-header-abierta",
-                children=[
-                    html.H4(nombre_str, className="tarjeta-titulo-indicador"),
-                    badge_sel,
-                ],
-            ),
-            html.Div(
-                className="tarjeta-cuerpo-detalle",
-                children=[
-                    html.Div(
-                        className="item-detalle-contexto",
-                        children=[
-                            html.Span("Macroproceso", className="label-detalle-contexto"),
-                            html.Span(macro_str, className="valor-detalle-contexto"),
-                        ],
-                    ),
-                    html.Div(
-                        className="item-detalle-contexto",
-                        children=[
-                            html.Span("Proceso", className="label-detalle-contexto"),
-                            html.Span(proceso_str, className="valor-detalle-contexto"),
-                        ],
-                    ),
-                    html.Div(
-                        className="item-detalle-contexto item-formula",
-                        children=[
-                            html.Span("Fórmula de Cálculo / Metodología", className="label-detalle-contexto"),
-                            html.Div(formula_str, className="valor-detalle-contexto valor-formula"),
-                        ],
-                    ),
-                ],
-            ),
-        ],
     )
 
 
