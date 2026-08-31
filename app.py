@@ -148,13 +148,8 @@ app.layout = html.Div(
                             style={"display": "none"},
                         ),
 
-                        # Gestor de Documentos (para secciones no-resumen)
-                        html.Div(
-                            id="vista-gestor-documentos",
-                            children=[layout_documentos()],
-                            style={"display": "none"},
-                        ),
-
+                        # Modal Gestor de Documentos (Overlay global)
+                        layout_documentos(),
                     ],
                 ),
             ],

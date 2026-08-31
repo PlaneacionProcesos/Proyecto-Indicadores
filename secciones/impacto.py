@@ -21,37 +21,16 @@ def layout_impacto():
                 children=[
                     html.H3(
                         "Indicadores - Impacto",
+                        id={"type": "titulo-tabla-seccion", "index": "impacto"},
                         className="titulo-tabla",
+                        n_clicks=0,
+                        style={"cursor": "pointer"},
+                        title="Clic para gestionar/subir documentos",
                     ),
                     banner_ayuda_tabla(),
                     html.Div(
                         className="tabla-contenedor",
                         children=[tabla_impacto()],
-                    ),
-                ],
-            ),
-            # ==================================================================
-            # Contexto y Fichas de Indicadores (Tarjetas de detalle)
-            # ==================================================================
-            html.Div(
-                className="seccion-contexto-indicadores",
-                children=[
-                    html.Div(
-                        className="encabezado-contexto-indicadores",
-                        children=[
-                            html.H3(
-                                "Contexto y Metodología de los Indicadores",
-                                className="titulo-contexto",
-                            ),
-                            html.P(
-                                "Consulta el macroproceso, proceso y fórmula de cálculo de cada indicador. Al hacer clic en una fila de la tabla, su tarjeta se resaltará automáticamente.",
-                                className="subtitulo-contexto",
-                            ),
-                        ],
-                    ),
-                    html.Div(
-                        id="tarjetas-contexto-impacto",
-                        className="grid-tarjetas-contexto",
                     ),
                 ],
             ),

@@ -28,3 +28,16 @@ CATEGORIAS_DOCUMENTOS = [
         "value": "sostenibilidad",
     },
 ]
+
+TIPOS_DOCUMENTOS = [
+    {
+        "label": "SGC",
+        "value": "SGC",
+    },
+    {
+        "label": "Estratégicos",
+        "value": "Estrategicos",
+    },
+]
+
+TIPOS_VALIDOS = {tipo["value"] for tipo in TIPOS_DOCUMENTOS}

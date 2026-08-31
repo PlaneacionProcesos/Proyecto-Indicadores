@@ -88,7 +88,6 @@ def registrar_callbacks_navegacion(app):
     # ======================================================================
     @app.callback(
         Output("vista-resumen", "style"),
-        Output("vista-gestor-documentos", "style"),
         Output("vista-aprendizaje", "style"),
         Output("vista-profesores", "style"),
         Output("vista-estudiantes", "style"),
@@ -108,7 +107,6 @@ def registrar_callbacks_navegacion(app):
 
         style_oculto = {"display": "none"}
         style_resumen = {"display": "flex", "flexDirection": "column", "flex": "1", "minWidth": "0", "minHeight": "0", "overflow": "hidden"}
-        style_gestor = {"display": "block", "padding": "0 20px"}
         style_aprendizaje = {"display": "block", "padding": "0 20px 20px"}
         style_profesores = {"display": "block", "padding": "0 20px 20px"}
         style_estudiantes= {"display": "block", "padding": "0 20px 20px"}
@@ -121,7 +119,6 @@ def registrar_callbacks_navegacion(app):
         if seccion == "resumen":
             return (
                 style_resumen,       # vista-resumen
-                style_oculto,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
                 style_oculto,        # vista-profesores
                 style_oculto,        # vista-en-estudiantes
@@ -136,7 +133,6 @@ def registrar_callbacks_navegacion(app):
         elif seccion == "aprendizaje_evaluacion":
             return (
                 style_oculto,        # vista-resumen
-                style_gestor,        # vista-gestor-documentos
                 style_aprendizaje,   # vista-aprendizaje
                 style_oculto,        # vista-profesores
                 style_oculto,        # vista-en-estudiantes
@@ -151,7 +147,6 @@ def registrar_callbacks_navegacion(app):
         elif seccion == "profesores":
             return (
                 style_oculto,        # vista-resumen
-                style_gestor,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
                 style_profesores,    # vista-profesores
                 style_oculto,        # vista-en-estudiantes
@@ -166,7 +161,6 @@ def registrar_callbacks_navegacion(app):
         elif seccion == "estudiantes":
             return (
                 style_oculto,        # vista-resumen
-                style_gestor,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
                 style_oculto,        # vista-profesores
                 style_estudiantes,   # vista-en-estudiantes
@@ -181,7 +175,6 @@ def registrar_callbacks_navegacion(app):
         elif seccion == "impacto":
             return (
                 style_oculto,        # vista-resumen
-                style_gestor,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
                 style_oculto,        # vista-profesores
                 style_oculto,        # vista-en-estudiantes
@@ -196,7 +189,6 @@ def registrar_callbacks_navegacion(app):
         elif seccion == "investigacion":
             return (
                 style_oculto,        # vista-resumen
-                style_gestor,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
                 style_oculto,        # vista-profesores
                 style_oculto,        # vista-en-estudiantes
@@ -211,7 +203,6 @@ def registrar_callbacks_navegacion(app):
         elif seccion == "siac":
             return (
                 style_oculto,        # vista-resumen
-                style_gestor,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
                 style_oculto,        # vista-profesores
                 style_oculto,        # vista-en-estudiantes
@@ -226,7 +217,6 @@ def registrar_callbacks_navegacion(app):
         elif seccion == "sostenibilidad":
             return (
                 style_oculto,        # vista-resumen
-                style_gestor,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
                 style_oculto,        # vista-profesores
                 style_oculto,        # vista-en-estudiantes
@@ -245,7 +235,6 @@ def registrar_callbacks_navegacion(app):
             nombre = nombres.get(seccion, seccion)
             return (
                 style_oculto,        # vista-resumen
-                style_gestor,        # vista-gestor-documentos
                 style_oculto,        # vista-aprendizaje
                 style_oculto,        # vista-profesores
                 style_oculto,        # vista-estudiantes

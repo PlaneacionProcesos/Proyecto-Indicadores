@@ -10,7 +10,8 @@ from componentes.db.crud import (
     eliminar_documento,
 )
 
-from componentes.db.categorias import CATEGORIAS_DOCUMENTOS
+from componentes.db.categorias import CATEGORIAS_DOCUMENTOS, TIPOS_DOCUMENTOS
+from datos import resultados_completos
 
 load_dotenv()
 
@@ -18,10 +19,20 @@ PASSWORD_ADMIN = os.getenv("PASSWORD_ADMIN")
 
 
 # ==========================================================
-# CATEGORÍAS VÁLIDAS
+# CATEGORÍAS VÁLIDAS Y MAPEO CON AGRUPADORES
 # ==========================================================
 
 CATEGORIAS_VALIDAS = {categoria["value"] for categoria in CATEGORIAS_DOCUMENTOS}
+
+MAPEO_SECCION_AGRUPADOR = {
+    "profesores": "Profesores",
+    "aprendizaje_evaluacion": "Aprendizaje y Evaluacion",
+    "estudiantes": "Estudiantes",
+    "impacto": "Impacto",
+    "investigacion": "Investigacion",
+    "siac": "SIAC - Rendicion de Cuentas",
+    "sostenibilidad": "Sostenibilidad",
+}
 
 
 def obtener_nombre_categoria(valor):
@@ -40,34 +51,94 @@ def obtener_nombre_categoria(valor):
 def registrar_callbacks_db(app):
 
     # ======================================================
-    # 1. MOSTRAR / OCULTAR ZONA DE LOGIN SECRETA (3 CLICS)
+    # 0. POBLAR OPCIONES DE INDICADORES EN EL DROPDOWN DE SUBIDA
+    # ======================================================
+
+    @app.callback(
+        Output("dropdown-numero-ind-subida", "options"),
+        Output("dropdown-numero-ind-subida", "value"),
+        Input("seccion-actual", "data"),
+    )
+    def actualizar_opciones_indicadores(seccion):
+        if not seccion:
+            return [], None
+
+        agrupador = MAPEO_SECCION_AGRUPADOR.get(seccion)
+        if not agrupador:
+            return [], None
+
+        df_sec = resultados_completos[resultados_completos["agrupador"] == agrupador]
+        df_unicos = df_sec[["numero_ind", "nombre indicador"]].dropna().drop_duplicates()
+
+        opciones = []
+        for _, row in df_unicos.iterrows():
+            num = str(row["numero_ind"]).strip()
+            nom = str(row["nombre indicador"]).strip()
+            if num and num.lower() != "nan":
+                opciones.append({
+                    "label": f"{num} — {nom}",
+                    "value": num,
+                })
+
+        opciones.sort(key=lambda x: x["label"])
+        return opciones, None
+
+    # ======================================================
+    # 1. MOSTRAR / OCULTAR MODAL DE GESTOR DE DOCUMENTOS
+    # ======================================================
+
+    @app.callback(
+        Output("modal-gestor-documentos", "style"),
+        Output("titulo-gestor-modal", "children"),
+        Input({"type": "titulo-tabla-seccion", "index": ALL}, "n_clicks"),
+        Input("btn-cerrar-gestor-modal", "n_clicks"),
+        Input("btn-entendido-gestor-modal", "n_clicks"),
+        State("seccion-actual", "data"),
+        prevent_initial_call=True,
+    )
+    def controlar_modal_gestor(clics_titulos, n_close_x, n_close_btn, seccion_actual):
+        trigger = ctx.triggered_id
+
+        # Si se hace clic en alguno de los botones de cerrar el modal
+        if trigger in ("btn-cerrar-gestor-modal", "btn-entendido-gestor-modal"):
+            return {"display": "none"}, "Documentos de la Sección"
+
+        # Si se hace clic en algún título de tabla de la sección (requiere 3 clics)
+        if isinstance(trigger, dict) and trigger.get("type") == "titulo-tabla-seccion":
+            val_clic = ctx.triggered[0]["value"] if ctx.triggered else 0
+            if val_clic and val_clic >= 3 and val_clic % 3 == 0:
+                nombre_sec = obtener_nombre_categoria(seccion_actual)
+                return {"display": "flex"}, f"Documentos y Evidencias - {nombre_sec}"
+
+        return no_update, no_update
+
+    # ======================================================
+    # 2. MOSTRAR / OCULTAR ZONA DE LOGIN ADMIN
     # ======================================================
 
     @app.callback(
         Output("zona-login-admin", "style"),
         Output("input-clave-admin", "value"),
-        Input("gestor-titulo-secreto", "n_clicks"),
+        Input("btn-mostrar-login-admin", "n_clicks"),
         Input("btn-cerrar-admin", "n_clicks"),
         State("zona-login-admin", "style"),
         prevent_initial_call=True,
     )
-    def toggle_login_secreto(clics_titulo, clics_cerrar, estilo_actual):
+    def toggle_login_admin(clics_mostrar, clics_cerrar, estilo_actual):
         trigger = ctx.triggered_id
 
         if trigger == "btn-cerrar-admin":
             return {"display": "none"}, ""
 
-        if trigger == "gestor-titulo-secreto" and clics_titulo:
-            # Se activa cuando se alcanzan 3 clics (o múltiplos de 3: 3, 6, 9...)
-            if clics_titulo >= 3 and clics_titulo % 3 == 0:
-                esta_visible = estilo_actual and estilo_actual.get("display") != "none"
-                nuevo_estilo = {"display": "none"} if esta_visible else {"display": "flex"}
-                return nuevo_estilo, no_update
+        if trigger == "btn-mostrar-login-admin":
+            esta_visible = estilo_actual and estilo_actual.get("display") != "none"
+            nuevo_estilo = {"display": "none"} if esta_visible else {"display": "flex"}
+            return nuevo_estilo, no_update
 
         return no_update, no_update
 
     # ======================================================
-    # 2. MOSTRAR / OCULTAR PANEL ADMIN (SUBIDA DE ARCHIVOS)
+    # 3. MOSTRAR / OCULTAR PANEL ADMIN (SUBIDA DE ARCHIVOS)
     # ======================================================
 
     @app.callback(
@@ -89,7 +160,7 @@ def registrar_callbacks_db(app):
         return {"display": "none"}
 
     # ======================================================
-    # 2. SUBIR DOCUMENTO
+    # 3. SUBIR DOCUMENTO (CON TIPO SGC / ESTRATÉGICOS Y NUMERO_IND)
     # ======================================================
 
     @app.callback(
@@ -97,12 +168,16 @@ def registrar_callbacks_db(app):
         Input("upload-documento", "contents"),
         State("upload-documento", "filename"),
         State("seccion-actual", "data"),
+        State("radio-tipo-documento", "value"),
+        State("dropdown-numero-ind-subida", "value"),
         prevent_initial_call=True,
     )
     def procesar_subida(
         contenido,
         nombre,
         categoria,
+        tipo_doc,
+        numero_ind,
     ):
 
         if not contenido or not nombre:
@@ -124,8 +199,11 @@ def registrar_callbacks_db(app):
                 style={"color": "red"},
             )
 
+        tipo_seleccionado = tipo_doc if tipo_doc in ("SGC", "Estrategicos") else "SGC"
+        num_ind_limpio = str(numero_ind).strip() if numero_ind and str(numero_ind).strip() != "" else None
+
         # ----------------------------------------------
-        # Guardar documento
+        # Guardar documento en MongoDB GridFS con metadatos
         # ----------------------------------------------
 
         try:
@@ -134,17 +212,21 @@ def registrar_callbacks_db(app):
                 contenido,
                 nombre,
                 categoria,
+                tipo=tipo_seleccionado,
+                numero_ind=num_ind_limpio,
             )
 
             nombre_categoria = obtener_nombre_categoria(categoria)
+            label_tipo = "SGC" if tipo_seleccionado == "SGC" else "Estratégicos"
+            ind_info = f" [Indicador: {num_ind_limpio}]" if num_ind_limpio else ""
 
             return html.Div(
                 (
-                    f"Archivo '{nombre}' subido "
+                    f"Archivo '{nombre}' [{label_tipo}]{ind_info} subido "
                     f"exitosamente en la categoría "
                     f"'{nombre_categoria}'."
                 ),
-                style={"color": "green"},
+                style={"color": "green", "fontWeight": "600"},
             )
 
         except Exception as e:
@@ -155,7 +237,7 @@ def registrar_callbacks_db(app):
             )
 
     # ======================================================
-    # 3. RENDERIZAR LISTA DE DOCUMENTOS
+    # 4. RENDERIZAR LISTA DE DOCUMENTOS (CON FILTRO DE TIPO Y BADGES)
     # ======================================================
 
     @app.callback(
@@ -175,11 +257,16 @@ def registrar_callbacks_db(app):
             "seccion-actual",
             "data",
         ),
+        Input(
+            "filtro-tipo-doc-lista",
+            "value",
+        ),
     )
     def actualizar_lista(
         mensaje,
         clave,
         categoria,
+        filtro_tipo,
     ):
 
         # Validar que exista una categoría seleccionada antes de consultar a Mongo
@@ -189,9 +276,11 @@ def registrar_callbacks_db(app):
                 style={"color": "#666", "marginTop": "15px"},
             )
 
+        tipo_param = None if (not filtro_tipo or filtro_tipo == "Todos") else filtro_tipo
+
         try:
-            # Ahora le pasas la categoría para que Mongo filtre desde el backend
-            docs = listar_documentos(categoria)
+            # Ahora le pasas la categoría y el tipo para filtrar en Mongo
+            docs = listar_documentos(categoria, tipo=tipo_param)
 
         except Exception as e:
 
@@ -211,7 +300,37 @@ def registrar_callbacks_db(app):
                 "Sin categoría",
             )
 
+            tipo_doc = doc.get(
+                "tipo",
+                "SGC",
+            )
+
+            num_ind_doc = doc.get(
+                "numero_ind",
+                None,
+            )
+
             nombre_categoria = obtener_nombre_categoria(cat_doc)
+
+            # Badge de Tipo de Archivo
+            if tipo_doc == "Estrategicos":
+                badge_tipo = html.Span("Estratégicos", className="badge-tipo badge-tipo-estrategico")
+            else:
+                badge_tipo = html.Span("SGC", className="badge-tipo badge-tipo-sgc")
+
+            badges_header = [badge_tipo]
+            if num_ind_doc:
+                badges_header.append(
+                    html.Span(
+                        num_ind_doc,
+                        className="badge-tipo",
+                        style={
+                            "backgroundColor": "#f1f5f9",
+                            "color": "#334155",
+                            "border": "1px solid #cbd5e1",
+                        },
+                    )
+                )
 
             # ------------------------------------------
             # Botón descargar
@@ -263,7 +382,10 @@ def registrar_callbacks_db(app):
                             html.Div(
                                 className="gestor-item-info",
                                 children=[
-                                    html.Span(doc["nombre"], className="gestor-item-titulo"),
+                                    html.Div([
+                                        *badges_header,
+                                        html.Span(doc["nombre"], className="gestor-item-titulo"),
+                                    ]),
                                     html.Span(
                                         (
                                             f"Categoría: {nombre_categoria} | "
@@ -287,8 +409,9 @@ def registrar_callbacks_db(app):
 
         if not elementos_lista:
             nombre_seccion_actual = obtener_nombre_categoria(categoria)
+            tipo_txt = f" de tipo '{filtro_tipo}'" if filtro_tipo and filtro_tipo != "Todos" else ""
             return html.Div(
-                f"No hay documentos disponibles para la sección '{nombre_seccion_actual}'.",
+                f"No hay documentos{tipo_txt} disponibles para la sección '{nombre_seccion_actual}'.",
                 style={
                     "color": "var(--text-soft)",
                     "textAlign": "center",
@@ -300,7 +423,7 @@ def registrar_callbacks_db(app):
         return html.Ul(elementos_lista, className="gestor-lista")
 
     # ======================================================
-    # 4. DESCARGAR / ELIMINAR DOCUMENTO
+    # 5. DESCARGAR / ELIMINAR DOCUMENTO
     # ======================================================
 
     @app.callback(

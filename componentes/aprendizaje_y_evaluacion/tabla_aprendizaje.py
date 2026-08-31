@@ -5,7 +5,6 @@ from configuraciones.colors import (
     COLOR_PRIMARIO,
 )
 
-
 # ==============================================================================
 # CONFIGURACIÓN DE COLORES DE CABECERA POR COLUMNA
 # ==============================================================================
@@ -16,27 +15,31 @@ VARIACION = "2025-2026"
 # Define aquí el color de fondo y de texto específico para cada columna:
 COLORES_CABECERA = {
     "nombre_indicador": {
-        "fondo": "#002060",  
-        "texto": "#FFFFFF",  
+        "fondo": "#002060",
+        "texto": "#FFFFFF",
+    },
+    "año-2023": {
+        "fondo": "#6ED8D8",
+        "texto": "#FFFFFF",
     },
     "año-2024": {
-        "fondo": "#D86ECC",  
+        "fondo": "#D86ECC",
         "texto": "#FFFFFF",
     },
     "año-2025": {
-        "fondo": "#FFC000",  
+        "fondo": "#FFC000",
         "texto": "#FFFFFF",
     },
     "año-2026": {
-        "fondo": "#47D45A",  
+        "fondo": "#47D45A",
         "texto": "#FFFFFF",
     },
     "variacion-ultimos_dos": {
-        "fondo": "#002060", 
+        "fondo": "#002060",
         "texto": "#FFFFFF",
     },
     "porcentaje_variacion": {
-        "fondo": "#002060",  
+        "fondo": "#002060",
         "texto": "#FFFFFF",
     },
 }
@@ -57,9 +60,10 @@ def tabla_aprendizaje():
     return dash_table.DataTable(
         id="tabla-aprendizaje",
         columns=[
+            {"name": "Indicador", "id": "nombre_indicador"},
             {
-                "name": "Indicador",
-                "id": "nombre_indicador"
+                "name": "2023",
+                "id": "año-2023",
             },
             {
                 "name": "2024",
@@ -73,14 +77,8 @@ def tabla_aprendizaje():
                 "name": "2026",
                 "id": "año-2026",
             },
-            {
-                "name": f"Variacion ({VARIACION})",
-                "id": "variacion-ultimos_dos"
-            },
-            {
-                "name": "%",
-                "id": "porcentaje_variacion"
-            },
+            {"name": f"Variacion ({VARIACION})", "id": "variacion-ultimos_dos"},
+            {"name": "%", "id": "porcentaje_variacion"},
         ],
         data=[],
         style_table={
@@ -106,6 +104,12 @@ def tabla_aprendizaje():
                 "minWidth": "240px",
                 "textAlign": "left",
                 "fontWeight": "600",
+            },
+            {
+                "if": {"column_id": "año-2023"},
+                "width": "11%",
+                "minWidth": "80px",
+                "textAlign": "center",
             },
             {
                 "if": {"column_id": "año-2024"},

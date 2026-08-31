@@ -1,4 +1,4 @@
-from dash import html
+from dash import html, dcc
 import pandas as pd
 
 
@@ -14,7 +14,7 @@ def banner_ayuda_tabla():
             html.Span(
                 [
                     "Haz clic en cualquier ",
-                    html.Strong("nombre de indicador", className="texto-ayuda-destacado"),
+                    html.Strong("nombre de indicador 👁️", className="texto-ayuda-destacado"),
                     " en la tabla para abrir instantáneamente su Ficha Técnica y Metodología en pantalla.",
                 ],
                 className="texto-ayuda-tabla",
@@ -25,7 +25,8 @@ def banner_ayuda_tabla():
 
 def layout_modal_contexto(seccion_id):
     """
-    Estructura del Modal emergente centrado para la sección indicada.
+    Estructura del Modal emergente centrado para la sección indicada,
+    incluyendo botones para descargar documentos SGC y Estratégicos.
     """
     return html.Div(
         id=f"modal-contexto-{seccion_id}",
@@ -63,15 +64,50 @@ def layout_modal_contexto(seccion_id):
                         id=f"modal-cuerpo-{seccion_id}",
                         className="modal-contexto-cuerpo",
                     ),
+                    # Footer con los 2 botones SGC y Estratégico + botón Cerrar
                     html.Div(
                         className="modal-contexto-footer",
                         children=[
+                            html.Div(
+                                className="modal-descargas-contenedor",
+                                children=[
+                                    html.Span("Documentos asociados:", className="modal-descargas-titulo"),
+                                    html.Div(
+                                        className="modal-botones-doc-grupo",
+                                        children=[
+                                            html.Button(
+                                                [
+                                                    html.Span("📄", style={"marginRight": "5px"}),
+                                                    "SGC",
+                                                ],
+                                                id=f"btn-descargar-sgc-{seccion_id}",
+                                                className="btn-modal-doc btn-modal-sgc",
+                                                n_clicks=0,
+                                                title="Descargar documento SGC de este indicador",
+                                            ),
+                                            html.Button(
+                                                [
+                                                    html.Span("📊", style={"marginRight": "5px"}),
+                                                    "Estratégico",
+                                                ],
+                                                id=f"btn-descargar-estrategico-{seccion_id}",
+                                                className="btn-modal-doc btn-modal-estrategico",
+                                                n_clicks=0,
+                                                title="Descargar documento Estratégico de este indicador",
+                                            ),
+                                        ],
+                                    ),
+                                    html.Div(id=f"alerta-doc-modal-{seccion_id}", className="modal-alerta-doc"),
+                                ],
+                            ),
                             html.Button(
                                 "Entendido / Cerrar",
                                 id=f"btn-entendido-modal-{seccion_id}",
                                 className="btn-entendido-modal",
                                 n_clicks=0,
                             ),
+                            dcc.Download(id=f"download-modal-{seccion_id}"),
+                            dcc.Store(id=f"store-numero-ind-modal-{seccion_id}"),
                         ],
                     ),
                 ],
@@ -80,18 +116,28 @@ def layout_modal_contexto(seccion_id):
     )
 
 
-def generar_cuerpo_modal(macroproceso, proceso, formula):
+
+def generar_cuerpo_modal(
+    campo1_val=None,
+    campo2_val=None,
+    formula=None,
+    label1="Macroproceso",
+    label2="Proceso",
+    numero_ind=None,
+):
     """
     Construye la UI del cuerpo del modal con diseño limpio.
+    Permite personalizar las etiquetas (por ejemplo, 'Responsable' y 'Tiempo de Reporte')
+    e incluir el número/código de indicador (numero_ind).
     """
-    macro_str = (
-        str(macroproceso).strip()
-        if pd.notna(macroproceso) and str(macroproceso).strip() != "" and str(macroproceso).strip().lower() != "nan"
+    val1_str = (
+        str(campo1_val).strip()
+        if pd.notna(campo1_val) and str(campo1_val).strip() != "" and str(campo1_val).strip().lower() != "nan"
         else "No especificado"
     )
-    proceso_str = (
-        str(proceso).strip()
-        if pd.notna(proceso) and str(proceso).strip() != "" and str(proceso).strip().lower() != "nan"
+    val2_str = (
+        str(campo2_val).strip()
+        if pd.notna(campo2_val) and str(campo2_val).strip() != "" and str(campo2_val).strip().lower() != "nan"
         else "No especificado"
     )
     formula_str = (
@@ -99,32 +145,52 @@ def generar_cuerpo_modal(macroproceso, proceso, formula):
         if pd.notna(formula) and str(formula).strip() != "" and str(formula).strip().lower() != "nan"
         else "Registro directo / No especificada"
     )
+    num_ind_str = (
+        str(numero_ind).strip()
+        if pd.notna(numero_ind) and str(numero_ind).strip() != "" and str(numero_ind).strip().lower() != "nan"
+        else None
+    )
+
+    campos = []
+
+    if num_ind_str:
+        campos.append(
+            html.Div(
+                className="modal-campo-grupo",
+                children=[
+                    html.Span("N° / Código Indicador", className="modal-campo-label"),
+                    html.Span(num_ind_str, className="modal-campo-valor", style={"fontWeight": "700", "color": "var(--primary)"}),
+                ],
+            )
+        )
+
+    campos.extend([
+        html.Div(
+            className="modal-campo-grupo",
+            children=[
+                html.Span(label1, className="modal-campo-label"),
+                html.Span(val1_str, className="modal-campo-valor"),
+            ],
+        ),
+        html.Div(
+            className="modal-campo-grupo",
+            children=[
+                html.Span(label2, className="modal-campo-label"),
+                html.Span(val2_str, className="modal-campo-valor"),
+            ],
+        ),
+        html.Div(
+            className="modal-campo-grupo modal-campo-full",
+            children=[
+                html.Span("Fórmula de Cálculo / Metodología", className="modal-campo-label"),
+                html.Div(formula_str, className="modal-campo-formula-box"),
+            ],
+        ),
+    ])
 
     return html.Div(
         className="modal-cuerpo-grid",
-        children=[
-            html.Div(
-                className="modal-campo-grupo",
-                children=[
-                    html.Span("Macroproceso", className="modal-campo-label"),
-                    html.Span(macro_str, className="modal-campo-valor"),
-                ],
-            ),
-            html.Div(
-                className="modal-campo-grupo",
-                children=[
-                    html.Span("Proceso", className="modal-campo-label"),
-                    html.Span(proceso_str, className="modal-campo-valor"),
-                ],
-            ),
-            html.Div(
-                className="modal-campo-grupo modal-campo-full",
-                children=[
-                    html.Span("Fórmula de Cálculo / Metodología", className="modal-campo-label"),
-                    html.Div(formula_str, className="modal-campo-formula-box"),
-                ],
-            ),
-        ],
+        children=campos,
     )
 
 
