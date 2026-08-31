@@ -178,6 +178,7 @@ registrar_callbacks_todas_secciones(app)
 
 server = app.server
 handler = server
+app.wsgi_app = server.wsgi_app
 
 if __name__ == "__main__":
     app.run(debug=True)
