@@ -14,7 +14,7 @@ def banner_ayuda_tabla():
             html.Span(
                 [
                     "Haz clic en cualquier ",
-                    html.Strong("nombre de indicador 👁️", className="texto-ayuda-destacado"),
+                    html.Strong("nombre de indicador ◉", className="texto-ayuda-destacado"),
                     " en la tabla para abrir instantáneamente su Ficha Técnica y Metodología en pantalla.",
                 ],
                 className="texto-ayuda-tabla",

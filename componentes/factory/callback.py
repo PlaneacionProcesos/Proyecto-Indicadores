@@ -79,7 +79,7 @@ def procesar_datos_tabla_seccion(agrupador, año, centro, periodo, nivel, modali
         return df_resultado.to_dict("records")
 
     indicadores = datos_ae["nombre indicador"].drop_duplicates()
-    df_resultado = pd.DataFrame({"nombre_indicador": indicadores})
+    df_resultado = pd.DataFrame({"nombre_indicador_clean": indicadores})
 
     serie_2023 = (
         datos_ae[datos_ae["ano"] == 2023]
@@ -106,10 +106,12 @@ def procesar_datos_tabla_seccion(agrupador, año, centro, periodo, nivel, modali
         .mean()
     )
 
-    val_2023 = df_resultado["nombre_indicador"].map(serie_2023)
-    val_2024 = df_resultado["nombre_indicador"].map(serie_2024)
-    val_2025 = df_resultado["nombre_indicador"].map(serie_2025)
-    val_2026 = df_resultado["nombre_indicador"].map(serie_2026)
+    val_2023 = df_resultado["nombre_indicador_clean"].map(serie_2023)
+    val_2024 = df_resultado["nombre_indicador_clean"].map(serie_2024)
+    val_2025 = df_resultado["nombre_indicador_clean"].map(serie_2025)
+    val_2026 = df_resultado["nombre_indicador_clean"].map(serie_2026)
+
+    df_resultado["nombre_indicador"] = df_resultado["nombre_indicador_clean"].apply(lambda x: f"◉  {x}")
 
     df_resultado["año-2023"] = val_2023.apply(
         lambda x: f"{round(x, 2):.0%}" if pd.notna(x) else "Sin datos"
@@ -200,8 +202,9 @@ def registrar_callback_seccion(app, seccion_id: str, clave_nav: str, agrupador: 
         if ctx_id == f"tabla-{seccion_id}" and active_cell is not None and data_tabla:
             row_idx = active_cell.get("row")
             if row_idx is not None and 0 <= row_idx < len(data_tabla):
-                nombre_indicador = data_tabla[row_idx].get("nombre_indicador")
-                if nombre_indicador:
+                nombre_indicador_raw = data_tabla[row_idx].get("nombre_indicador")
+                if nombre_indicador_raw:
+                    nombre_indicador = str(nombre_indicador_raw).replace("◉", "").strip()
                     df_ind = resultados_completos[
                         (resultados_completos["agrupador"] == agrupador) &
                         (resultados_completos["nombre indicador"] == nombre_indicador)
